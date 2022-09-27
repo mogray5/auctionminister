@@ -1,0 +1,8 @@
+#set($item1="#menulink('inventorymain.action' 'Inventory' 'menulink')")
+#set($item2="#menulink('purchmain.action' 'Purchases' 'menulink')")
+#set($item3="#menulink('salesmain.action' 'Sales' 'menulink')")
+#set($item4="#menulink('reportsmain.action' 'Reports' 'menulink')")
+#set($item5="#menulink('uploadmain.action' 'Imports' 'menulink')")
+#set($itemlist=[$item1, $item2, $item3, $item4, $item5])
+
+

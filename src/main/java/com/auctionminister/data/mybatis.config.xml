@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+	
+	<typeAliases>
+		
+		<!-- Returns -->
+		<typeAlias type="com.auctionminister.data.AccountData" alias="AccountData"/>
+		<typeAlias type="com.auctionminister.data.CustomerData" alias="CustomerData"/>
+		<typeAlias type="com.auctionminister.data.CustomerSmallData" alias="CustomerSmallData"/>
+		<typeAlias type="com.auctionminister.data.EveReftypeData" alias="EveReftypeData"/>
+		<typeAlias type="com.auctionminister.data.GlAccountTypes" alias="GlAccountTypes"/>
+		<typeAlias type="com.auctionminister.data.ItemAssembly" alias="ItemAssembly"/>
+		<typeAlias type="com.auctionminister.data.ItemClassData" alias="ItemClassData"/>
+		<typeAlias type="com.auctionminister.data.ItemData" alias="ItemData"/>
+		<typeAlias type="com.auctionminister.data.JournalUploadData" alias="JournalUploadData"/>
+		<typeAlias type="com.auctionminister.data.PoBatchData" alias="PoBatchData"/>
+		<typeAlias type="com.auctionminister.data.PoHeaderData" alias="PoHeaderData"/>
+		<typeAlias type="com.auctionminister.data.PoLineData" alias="PoLineData"/>
+		<typeAlias type="com.auctionminister.data.ReportData" alias="ReportData"/>
+		<typeAlias type="com.auctionminister.data.ReportParamData" alias="ReportParamData"/>
+		<typeAlias type="com.auctionminister.data.SaBatchData" alias="SaBatchData"/>
+		<typeAlias type="com.auctionminister.data.SaHeaderData" alias="SaHeaderData"/>
+		<typeAlias type="com.auctionminister.data.SaLineData" alias="SaLineData"/>
+		<typeAlias type="com.auctionminister.data.UploadData" alias="UploadData"/>
+		<typeAlias type="com.auctionminister.data.UploadKey" alias="UploadKey"/>
+		<typeAlias type="com.auctionminister.data.UserData" alias="UserData"/>
+		<typeAlias type="com.auctionminister.data.UserSmallData" alias="UserSmallData"/>
+		<typeAlias type="com.auctionminister.data.VendorData" alias="VendorData"/>
+		<typeAlias type="com.auctionminister.data.VendorSmallData" alias="VendorSmallData"/>
+		
+		<!-- Params -->
+		<typeAlias type="com.auctionminister.params.AccountParams" alias="AccountParams"/>
+		<typeAlias type="com.auctionminister.params.AdjustItemParams" alias="AdjustItemParams"/>
+		<typeAlias type="com.auctionminister.params.DayLookupParams" alias="DayLookupParams"/>
+		<typeAlias type="com.auctionminister.params.LoginParams" alias="LoginParams"/>
+		<typeAlias type="com.auctionminister.params.PoLookupParams" alias="PoLookupParams"/>
+		<typeAlias type="com.auctionminister.params.SaLookupParams" alias="SaLookupParams"/>
+		<typeAlias type="com.auctionminister.params.SearchParams" alias="SearchParams"/>
+		<typeAlias type="com.auctionminister.params.UploadParams" alias="UploadParams"/>
+		<typeAlias type="com.auctionminister.params.UploadKeyParams" alias="UploadKeyParams"/>
+
+	</typeAliases>
+	
+	<environments default="development">
+		<environment id="development">
+			<transactionManager type="JDBC" />
+			<dataSource type="JNDI">
+				<property name="initial_context" value="java:comp/env" />
+				<property name="data_source" value="jdbc/minister" />
+			</dataSource>
+		</environment>
+	</environments>
+
+	<mappers>
+		<mapper resource="com/auctionminister/data/EveMapper.xml" />
+		<mapper resource="com/auctionminister/data/IvMapper.xml" />
+		<mapper resource="com/auctionminister/data/GlMapper.xml" />
+		<mapper resource="com/auctionminister/data/PoMapper.xml" />
+		<mapper resource="com/auctionminister/data/SysMapper.xml" />
+		<mapper resource="com/auctionminister/data/RptMapper.xml" />
+		<mapper resource="com/auctionminister/data/SoMapper.xml" />
+		<mapper resource="com/auctionminister/data/UploadMapper.xml" />
+	</mappers>
+
+	
+
+</configuration>
+

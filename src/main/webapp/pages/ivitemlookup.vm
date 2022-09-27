@@ -1,0 +1,72 @@
+#parse("/pages/top.vm")
+#parse("/pages/workmenu.vm")
+#hmenu($itemlist '100%' "right" "workmenu" 1)
+#parse("/pages/inventorymenu.vm")
+#hmenu($itemlist '100%' "right" "submenu" 2)
+
+#if ($isSecure=="S")
+	<br><br>
+	
+	#mainheader("Item Lookup")
+	
+	#if($ItemList.size()>100)
+		#if(!$ItemList.isFirstPage())
+		     	<a href="ivdoitemlookup.action?PrevPage=true">Previous Page</a>
+		#else
+		     	Previous Page
+		#end
+				|
+		#if(!$ItemList.isLastPage())
+		      	<a href="ivdoitemlookup.action?NextPage=true">Next Page</a>
+		#else
+		      	Next Page
+		#end
+	#end	
+	#sectionheader("Select an Item")
+	
+	
+	#set($maint1="#menulink('javascript:document.frmSelect.submit();' 'Select' 'menulink')")
+	#set($itemlist=[$maint1])
+	#hmenu($itemlist '70px' "center" "submenu" 99)
+	<form name="frmSelect" method="POST" action="$!Caller">
+	<br>
+		
+	#set($index = 0)
+	<div align="center">
+	
+	<table border=1 width="400px" cellpadding="5">
+		<tr class="rowstyle1">
+		<td></td>		
+		<td>Item Id</td>
+		<td>Description</td>
+		</tr>
+		#foreach ($line in $ItemList)
+			
+			#if($index==0)
+				#set($style="rowstyle2")
+				#set($index=1)
+			#else
+				#set($style="rowstyle3")
+				#set($index=0)
+			#end
+			<tr class="$style">
+			<td><input type="radio" name="ItemId" value="$line.getItemId()"/></td>
+			<td>#baselink("ivitemview.action?itemId=$!line.getItemId()" $!line.getItemId())</td>
+			<td>$!line.getItemDesc()</td>
+			</tr>
+		#end
+	</table>
+	
+	</div>
+
+	</form>
+	
+
+#else
+	#denied()
+#end
+
+
+
+
+#parse("/pages/bottom.vm")

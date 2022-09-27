@@ -1,0 +1,77 @@
+#parse("/pages/top.vm")
+#parse("/pages/workmenu.vm")
+#hmenu($itemlist '100%' "right" "workmenu" 2)
+#parse("/pages/pomenu.vm")
+#hmenu($itemlist '100%' "right" "submenu" 99)
+
+#if ($isSecure=="S")
+	<br><br>
+	#mainheader("Vendor Address Information")
+	
+	#sectionheader("Contact Information for: $!VendorData.getVendorName()")
+
+	#set($maint1="#menulink('povendormaint.action' 'Back' 'menulink')")
+	#set($itemlist=[$maint1])
+	#hmenu($itemlist '70px' "center" "submenu" 99)
+	
+	<br>
+
+	<div align="center">
+	<table class="formtable">
+		<tr>
+			<td class="labeltext">Vendor ID:</td>
+			<td>$!VendorData.getVendorId()</td>
+		</tr>
+		<tr>
+			<td class="labeltext">Vendor Name:</td>
+			<td>$!VendorData.getVendorName()</td>
+		</tr>
+		<tr>
+			<td class="labeltext">Address:</td>
+			<td>
+			#if($VendorData.getAddress1()!="")
+				$VendorData.getAddress1()<br>
+			#end			
+			#if($VendorData.getAddress2()!="")
+				$VendorData.getAddress2()<br>
+			#end			
+			#if($VendorData.getAddress3()!="")
+				$VendorData.getAddress3()<br>
+			#end			
+			#if($VendorData.getCity()!="")
+				$VendorData.getCity()
+			#else
+				.
+			#end
+			#if($VendorData.getState()!="")
+				, $VendorData.getState()
+			#end
+			#if($VendorData.getZip()!="")
+				  $VendorData.getZip()
+			#end
+			</td>
+		</tr>
+		<tr>
+			<td class="labeltext">Country:</td>
+			<td>$!VendorData.getCountry()</td>		
+		</tr>
+		<tr>
+			<td class="labeltext">Phone 1:</td>
+			<td>$!VendorData.getPhone1()</td>		
+		</tr>
+		<tr>
+			<td class="labeltext">Phone 2:</td>
+			<td>$!VendorData.getPhone2()</td>		
+		</tr>
+		<tr>
+			<td class="labeltext">Fax:</td>
+			<td>$!VendorData.getFax()</td>			
+		</tr>
+	</table>
+	</div>
+	
+#else
+	#denied()
+#end
+
+#parse("/pages/bottom.vm")

@@ -1,0 +1,241 @@
+#macro( startbaseinfo $title $width )
+	<table width="$width" cellspacing="0" cellpadding="0">
+    	<tr>
+		    <td><img class="info" src="images/tb1_tl.png"/></td>
+		    <td class="info"></td>
+		    <td><img class="info" src="images/tb1_tr.png"/></td>
+	    </tr>
+	    <tr>
+		    <td class="info"></td>
+		    <td>
+				<p>
+				<br>
+					<DIV class="msgtitle">
+				    	$title
+				    </DIV>
+						<table class="fullwithpadding">
+							<tr>
+							<td class="msgblock">
+#end
+#macro( endbaseinfo )
+		</td></tr></table>
+	</p>
+	</td><td class="info"></td>
+	</tr><tr>
+		<td><img class="info" src="images/tb1_bl.png"/></td>
+		<td class="info"></td>
+		<td><img class="info" src="images/tb1_br.png"/></td>
+	</tr>
+   	</table>
+#end
+
+#macro(baselink $url $value)
+	<a class="baselink" href="$url">$value</a>
+#end
+
+#macro(menulink $url $value $class)
+	<a class="$class" href="$url">$value</a>
+#end
+
+#macro(imagelink $url $image $height $width)
+	<a href="$url">
+		<img src="images/$image" height="$height" width="$width" border=0/>
+	</a>
+#end
+
+#macro(vmenu $itemlist $width $align $style $selector)
+	#set($index=1)
+	<table width="$width" align="$align" cellpadding="0" cellspacing="0">
+		#foreach ($item in $itemlist)
+		<tr>
+		#if($index > 1)
+			<td class="$style">
+			<img src="images/mnuborder.png" width="$width" height="2"/><br>
+		#else
+			<td class="menudivider"></td></tr>
+			<tr>
+			#if($index==$selector)
+				<td class="selected">
+			#else
+				<td class="$style">
+			#end
+		#end
+		#set($index=$index + 1)
+		$item
+		</td>
+		</tr>
+		#end
+	</table>
+#end
+
+#macro(hmenu $itemlist $width $align $style $selector)
+	#set($index=1)
+	<table width="$width" align="$align">
+		<tr>
+		#foreach ($item in $itemlist)
+		
+		#if($index>1)
+			<td class="$style">
+##			<img src="images/mnuborderv.png" width="2" height="10"/>
+			</td>
+		#end
+
+			#if($index==$selector)
+				<td class="selected">
+			#else
+				<td class="$style">
+			#end
+			#set($index=$index + 1)
+
+			$item
+			</td>
+		#end
+		</tr>
+	</table>
+#end
+
+#macro(denied)
+	<br><br><br>
+	<div align="center">
+	#startbaseinfo("Permission Denied" 250)
+	<p>You must login to the system first to view this page.</p><br>
+	#endbaseinfo()
+	</div>
+#end
+
+#macro(sectionheader $body)
+	<div class="sectionheader">
+	 $body
+	</div>
+	<br>
+#end
+
+#macro(mainheader $body)
+	<div class="mainheader">
+	 $body
+	</div>
+	<br>
+#end
+
+#macro(textinput $label $name $data $length)
+     <div class="right"><span class="left">$label:</span>
+       		<input type="text" name="$name" value="$data" size="$!length"/>
+       </div>
+#end
+
+#macro(textinputencrypted $label $name $data $length)
+     <div class="right"><span class="left">$label:</span>
+       		<input type="password" name="$name" value="$data" size="$!length"/>
+       </div>
+#end
+
+#macro(checkbox $label $name $checked)
+     <div class="right"><span class="left">$label:</span>
+       		<input type="checkbox" name="$name" value=1 $checked/>
+       </div>
+#end
+
+#macro(startddinput $label $name)
+       <div class="right"><span class="left">$label:</span>
+       		<select name="$name">
+#end
+
+#macro (endddinput)
+       	</select>
+       </div>
+#end
+
+#macro(ddoption $label $value $selected)
+	#if($selected==".")
+		<option selected="selected" value="$!value">$!label</Option>
+	#else
+		<option value="$!value">$!label</Option>	
+	#end
+#end
+
+
+#macro(textareainput $label $name $data $rows $cols) 
+	<div class="right"><span class="left">$label:</span>
+    	<textarea name="$name" rows=$rows cols=$cols>$data</textarea>
+    </div>
+#end
+
+#macro(dateinput $name)
+	<input type="text" size="7" name="$name" class="dateInput" />
+#end
+
+#macro(formstart $width $align)
+	<div align="$align">
+	<div style="width: $width;">
+#end
+
+#macro(formend)
+	</div>
+	</div>
+#end
+
+#macro(dataout $label $data)
+     <div class="right"><span class="left">$label:</span>
+       		<b>$!data</b>
+       </div>
+#end
+
+#macro(itemsearchform $lookupaction $calleraction $reload)
+	<div align="center">
+	<form name="frmItemLookup" method="post" action="$lookupaction">
+		#if ($reload)
+			<input type="hidden" name="Reload" value="Y"/>		
+		#end
+		<input type="hidden" name="Caller" value="$calleraction"/>
+		<table width="200px">
+			<tr>
+			<td colspan=2 class="labeltext">Enter the starting characters
+			of the item you are looking for.</td>
+			</tr><tr>
+			<td><input name="ItemId" type="text" size="18" value="%"/></td>
+			<td><input name="cmdLookup" type="submit" value="Search"/>
+			</tr>
+		</table>		
+	</form>
+	</div>	
+#end
+
+#macro(customersearchform $lookupaction $calleraction $reload)
+	<div align="center">
+	<form name="frmCustomerLookup" method="post" action="$lookupaction">
+		#if ($reload)
+			<input type="hidden" name="Reload" value="Y"/>		
+		#end
+		<input type="hidden" name="Caller" value="$calleraction"/>
+		<table width="200px">
+			<tr>
+			<td colspan=2 class="labeltext">Enter the starting characters
+			of the name of the customer you are looking for.</td>
+			</tr><tr>
+			<td><input name="CustomerSearch" type="text" size="18"/></td>
+			<td><input name="cmdLookup" type="submit" value="Search"/>
+			</tr>
+		</table>		
+	</form>
+	</div>	
+#end
+
+#macro(vendorsearchform $lookupaction $calleraction $reload)
+	<div align="center">
+	<form name="frmVendorLookup" method="post" action="$lookupaction">
+		#if ($reload)
+			<input type="hidden" name="Reload" value="Y"/>		
+		#end
+		<input type="hidden" name="Caller" value="$calleraction"/>
+		<table width="200px">
+			<tr>
+			<td colspan=2 class="labeltext">Enter the starting characters
+			of the name of the vendor you are looking for.</td>
+			</tr><tr>
+			<td><input name="VendorSearch" type="text" size="18"/></td>
+			<td><input name="cmdLookup" type="submit" value="Search"/>
+			</tr>
+		</table>		
+	</form>
+	</div>	
+#end

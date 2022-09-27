@@ -1,0 +1,32 @@
+#parse("/pages/top.vm")
+#parse("/pages/workmenu.vm")
+#hmenu($itemlist '100%' "right" "workmenu" 2)
+#parse("/pages/pomenu.vm")
+#hmenu($itemlist '100%' "right" "submenu" 99)
+
+#if ($isSecure=="S")
+	<br><br>
+	#mainheader("Apply Cost Results")
+	
+	#set($maint1="#menulink('pocostsentry.action' 'Back' 'menulink')")
+	#set($itemlist=[$maint1])
+	#hmenu($itemlist '70px' "center" "submenu" 99)
+	
+	<br><br>
+	
+	<div align="center">
+	
+	#startbaseinfo("Process Results" 200)
+	<p class="msgblock">
+	Purchase Cost was successfully applied!
+	</p><br>
+	#endbaseinfo()
+	
+	</div>
+
+	
+#else
+	#denied()
+#end
+
+#parse("/pages/bottom.vm")

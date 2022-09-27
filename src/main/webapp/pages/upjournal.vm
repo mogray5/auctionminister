@@ -1,0 +1,110 @@
+#parse("/pages/amupload.vm")
+
+
+<br><br><br>
+
+#if ($isSecure=="S")
+
+	<div align="center">
+	#mainheader("Eve Upload")
+	#sectionheader("Start New Upload")
+
+ 	<form name="frmUpload" action="upjournalUpload.action" method="POST" enctype="multipart/form-data">
+ 	
+ 	<!-- input type="image" src="images/next.png" -->
+
+
+	#startbaseinfo("Importing Eve Journal Data." 600)
+	<p class="msgblock">
+	TODO
+	</p><br>
+	#endbaseinfo()
+	
+	#if($JournalCount==0)
+		<br><br>
+		<table width="350" border="0" cellpadding="3" cellspacing="0">
+		  <tr>
+			<td align="center">
+				#menulink("#" "Download Using Eve API" "menulink")
+			</td>
+			</tr>
+			</tr>
+		    <tr><td align="center"><br/><h3>OR</h3><br/></td></tr>
+		    </td>
+			<tr>
+		    <td>Select File to Upload<br/>
+		     <input type="file" name="FileName" value="Browse..." size="50"/></td>
+			</tr>
+		 </table>
+		</div>
+		<br><br>
+
+	 	#set($maint2="#menulink('javascript:document.frmUpload.submit();' 'Upload' 'menulink')")
+		#set($itemlist2=[$maint2])
+		#hmenu($itemlist2 '70px' "center" "submenu" 99)
+	
+	#else
+	
+		<br><br>
+			
+		#set($maint1="#menulink('upjournal.action?action=post' 'Post' 'menulink')")
+	 	#set($maint3="#menulink('upjournal.action?action=delall' 'Delete All' 'menulink')")
+	 	#set($maint4="#menulink('upjournal.action?action=deldup' 'Delete Duplicates' 'menulink')")
+		#set($itemlist=[$maint1, $maint3, $maint4])
+		
+		#hmenu($itemlist '300px' "center" "submenu" 99)
+		<br><br>	
+		
+		#set($index = 0)
+		<div align="center">
+		<table border=1 width="90%" cellpadding="5">
+			<tr class="rowstyle1">
+			<td>Tran Date</td>
+			<td>Ref Number</td>
+			<td>Ref Type</td>
+			<td>Ref Type Name</td>
+			<td>Owner One</td>
+			<td>Owner Two</td>
+			<td>Arg Name One</td>
+			<td>Amount</td>
+			<td>Balance</td>
+			</tr>
+			#foreach ($line in $JournalTran)
+				
+				#if($index==0)
+					#set($style="rowstyle2")
+					#set($index=1)
+				#elseif($line.getIsDup()==1)
+					#set($style="upcode3")
+				#set($style="upcode3")
+				#else
+					#set($style="rowstyle3")
+					#set($index=0)
+				#end
+		
+				<tr class="$style">
+				<td>$line.getTranDate()</td>
+				<td>$line.getRefNum()</td>
+				<td>$line.getRefType()</td>
+				<td>$line.getRefTypeName()</td>
+				<td>$line.getOwner1()</td>
+				<td>$line.getOwner2()</td>
+				<td>$line.getArgName1()</td>
+				<td>$line.getAmountAsString()</td>
+				<td>$line.getBalanceAsString()</td>
+				<td class="center">#baselink("upjournal.action?action=delline&refNum=$!line.getRefNum()" "Delete")</td>
+				</tr>
+			#end
+		</table>
+		</div>
+	#end
+	 </form>
+	 
+	 <br><br>
+	 $Status
+
+#else
+	#denied()
+#end
+
+#parse("/pages/bottom.vm")

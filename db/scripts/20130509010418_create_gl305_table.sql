@@ -1,0 +1,35 @@
+--// create gl305 table
+-- Migration SQL that makes the change goes here.
+
+CREATE SEQUENCE gl305_seq
+   INCREMENT 1
+   START 1;
+   
+ALTER TABLE gl305_seq OWNER TO auctionminister;
+
+CREATE TABLE gl305 
+(
+  USERID SMALLINT NOT NULL DEFAULT 0,
+  TRXINDEX NUMERIC(20) NOT NULL DEFAULT nextval('gl305_seq'::regclass),
+  ACTINDEX INTEGER NOT NULL DEFAULT 0,
+  TRXDATE date NOT NULL,
+  TRXREF varchar(50) NOT NULL DEFAULT '',
+  CREDITBALANCE decimal NOT NULL DEFAULT 0.00,
+  DEBITBALANCE decimal NOT NULL DEFAULT 0.00,
+  CONSTRAINT PK_GL305 PRIMARY KEY (TRXINDEX) USING INDEX TABLESPACE pg_default
+) 
+WITH (
+  OIDS = FALSE
+)
+;
+
+CREATE INDEX idx_gl305_1 ON gl305 (USERID,ACTINDEX,TRXDATE);
+
+ALTER TABLE gl305 OWNER TO auctionminister;
+
+--//@UNDO
+-- SQL to undo the change goes here.
+
+DROP INDEX idx_gl305_1;
+DROP TABLE gl305;
+DROP SEQUENCE gl305_seq;

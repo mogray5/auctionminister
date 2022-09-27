@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    
+    <constant name="struts.devMode" value="true" />
+    
+    <package name="default" extends="struts-default">
+ 
+        <interceptors>
+            <!-- <interceptor name="component" class="org.apache.struts2.interceptor.component.ComponentInterceptor"/> -->
+            <interceptor name="security" class="com.auctionminister.interceptors.SecurityInterceptor"/>
+            <interceptor name="recordcheck" class="com.auctionminister.interceptors.MissingRecordInterceptor"/>
+            <interceptor-stack name="defaultStack">
+               <!--   <interceptor-ref name="component"/>  -->
+                <interceptor-ref name="staticParams"/>
+                <interceptor-ref name="params"/>
+            </interceptor-stack>
+            <interceptor-stack name="defaultStackWithSecurity">
+                <interceptor-ref name="defaultStack"/>
+                <interceptor-ref name="security"/>
+            </interceptor-stack>
+            <interceptor-stack name="recordCheckStack">
+                <interceptor-ref name="defaultStack"/>
+                <interceptor-ref name="recordcheck"/>
+                <interceptor-ref name="security"/>
+            </interceptor-stack>
+        </interceptors>
+        
+        <default-interceptor-ref name="defaultStack"/>
+       
+       <global-results> 
+            <result name="login" type="velocity"> 
+                /pages/amlogin.vm 
+            </result> 
+            <result name="error" type="velocity"> 
+                /pages/amerrors.vm 
+            </result> 
+        </global-results> 
+        
+        <!-- MAIN ACTIONS -->
+        <action name="verifylogin" class="com.auctionminister.action.system.LoginAction">
+    	    <result name="success" type="chain">
+            	ammain
+            </result>
+            <result name="input" type="velocity">
+                /pages/amlogin.vm
+            </result>
+	    </action>
+        <action name="ammain" class="com.auctionminister.action.system.SecureAction">
+    	    <result name="success" type="velocity">
+            	/pages/myam.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+        <action name="logout" class="com.auctionminister.action.system.LogoutAction">
+    	    <result name="success" type="velocity">
+            	/pages/goodby.vm
+            </result>
+	    </action>
+        <action name="adduser" class="com.auctionminister.action.system.AddUserAction">
+    	    <result name="success" type="velocity">
+            	/pages/myam.vm
+            </result>
+            <result name="input" type="velocity">
+                /pages/amadduser.vm
+            </result>
+	    </action>
+       
+	      
+    </package>
+    
+    <include file="struts-reports.xml"/>
+    <include file="struts-sales.xml"/>
+    <include file="struts-uploads.xml"/>
+    <include file="struts-purchases.xml"/>
+    <include file="struts-items.xml"/>
+    
+</struts>

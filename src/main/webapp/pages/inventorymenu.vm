@@ -1,0 +1,8 @@
+#set($item1="#menulink('ivdoitemlookup.action' 'Stock Status' 'menulink')")
+#set($item2="#menulink('ivedititem.action' 'Item Maintenance' 'menulink')")
+#set($item3="#menulink('ivadjustqty.action' 'Adjust Quantities' 'menulink')")
+#set($item4="#menulink('ivclasslookup.action' 'Class Maintenance' 'menulink')")
+#set($item5="#menulink('ivassembly.action' 'Assembly Manager' 'menulink')")
+#set($item6="#menulink('ivmfgplanner.action' 'Mfg Planner' 'menulink')")
+#set($itemlist=[$item1, $item2, $item3, $item4, $item5, $item6])
+<br>

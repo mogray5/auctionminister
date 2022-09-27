@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auctionminister.data">
+
+	<insert id="AddPaypalTran" parameterType="UploadData">
+       <![CDATA[  insert into tmp001 
+        (USERID, BATCHID, ITEMID,TMPDATE, TMPNAME, TMPTYPE,
+        TMPSUBJECT, TMPPRICE, TMPQUANTITY, TMPTOEMAIL, TMPSHIPADDRESS,
+        TMPITEMTITLE, TMPITEMID, TMPSHIPAMT, TMPINSURANCEAMT,
+        TMPTAXAMT, TMPBUYERID, TMPITEMURL, TMPREFTXNID, AMINCLUDE,
+        AMTYPE)
+        values(#{userId}, #{batchId}, #{itemId}, #{tmpDate}, #{tmpName}, #{tmpType},
+        #{tmpSubject}, #{tmpPrice}, #{tmpQuantity}, #{tmpToEmail},
+        #{tmpShipAddress}, #{tmpItemTitle}, #{tmpItemId}, 
+        #{tmpShipAmt}, #{tmpInsuranceAmt}, #{tmpTaxAmt},
+        #{tmpBuyerId}, #{tmpItemUrl}, #{tmpRefTxnId}, #{amInclude},
+        #{amType}) ]]>
+	</insert>
+
+	<insert id="AddNewUploadBatch" parameterType="UploadParams">
+        <![CDATA[ insert into tmp002 (USERID, UPDT)
+        values (#{userId}, #{upDate}) ]]>
+	</insert>
+
+	<insert id="AddJournalTran" parameterType="JournalUploadData">
+  		 <![CDATA[ 
+  		 	insert into tmp003
+  		 	(TRANDATE, REFNUM, REFTYPE, OWNER1, OWNER2, 
+  		 	ARGNAME1, AMOUNT, BALANCE, USERID)
+  		 	values (#{tranDate}, #{refNum}, #{refType}, 
+  		 	#{owner1}, #{owner2}, #{argName1}, #{amount}, 
+  		 	#{balance}, #{userId})  
+  		  ]]>
+	</insert>
+
+	<insert id="ArchiveJournalTran" parameterType="JournalUploadData">
+  		 <![CDATA[ 
+  		 	insert into fe001
+  		 	(TRANDATE, REFNUM, REFTYPE, OWNER1, OWNER2, 
+  		 	ARGNAME1, AMOUNT, BALANCE, USERID)
+			select TRANDATE, REFNUM, REFTYPE, OWNER1, OWNER2, 
+  		 	ARGNAME1, AMOUNT, BALANCE, USERID
+  		 	from tmp003 WHERE
+        	tmp003.USERID = #{userId} AND 
+        	tmp003.REFNUM = #{refNum}
+  		  ]]>
+	</insert>
+
+	<select id="GetArchivedJournalTranLine" parameterType="JournalUploadData"
+		resultType="JournalUploadData">
+		SELECT a.TRANDATE, a.REFNUM, a.REFTYPE,
+		a.OWNER1, a.OWNER2,
+		a.ARGNAME1, a.AMOUNT,
+		a.BALANCE, a.USERID
+		FROM fe001 a
+		WHERE a.USERID =
+		#{userId}
+		AND a.REFNUM = #{refNum}
+
+	</select>
+
+	<select id="GetBatchId" parameterType="java.lang.Long"
+		resultType="java.lang.Long">
+        <![CDATA[ select max(BATCHID) from tmp002 where USERID=#{value}]]>
+	</select>
+
+	<select id="GetBatchList" parameterType="java.lang.Long"
+		resultType="UploadData">
+        <![CDATA[ SELECT USERID, BATCHID, TRXINDEX, AMINCLUDE, AMTYPE,
+        SONUMBER, PONUMBER, CUSTOMERID, VENDORID,
+        ITEMID, AMSTATUS, AMMSG,
+        TMPDATE, TMPNAME, TMPTYPE,
+        TMPSUBJECT, TMPPRICE, TMPQUANTITY, TMPTOEMAIL, TMPSHIPADDRESS,
+        TMPITEMTITLE, TMPITEMID, TMPSHIPAMT, TMPINSURANCEAMT,
+        TMPTAXAMT, TMPBUYERID, TMPITEMURL, TMPREFTXNID,
+        (TMPPRICE * TMPQUANTITY) as NETAMT
+        from tmp001 
+        where BATCHID=#{value} AND AMSTATUS <> 2 ]]>
+	</select>
+
+	<select id="GetBatchIncludeListByType" parameterType="UploadParams"
+		resultType="UploadData">
+       <![CDATA[  SELECT a.USERID, a.BATCHID, a.TRXINDEX, a.AMINCLUDE, a.AMTYPE,
+        a.SONUMBER, a.PONUMBER, a.CUSTOMERID, a.VENDORID,
+        a.ITEMID, a.AMSTATUS, a.AMMSG,
+        a.TMPDATE, a.TMPNAME, TMPTYPE,
+        TMPSUBJECT, TMPPRICE, TMPQUANTITY, TMPTOEMAIL, TMPSHIPADDRESS,
+        TMPITEMTITLE, TMPITEMID, TMPSHIPAMT, TMPINSURANCEAMT,
+        TMPTAXAMT, TMPBUYERID, TMPITEMURL, TMPREFTXNID,
+        (TMPPRICE * TMPQUANTITY) as NETAMT
+        from tmp001 a inner join tmp002 b on
+        a.BATCHID = b.BATCHID
+        where a.AMINCLUDE=1 AND
+        b.USERID=#{userId} AND a.AMTYPE=#{amType} AND a.AMSTATUS =1
+        ORDER BY
+        a.CUSTOMERID ]]>
+	</select>
+
+	<update id="EditTranStatus" parameterType="UploadData">
+        <![CDATA[ UPDATE tmp001 
+        SET AMINCLUDE=#{amInclude},
+        AMTYPE=#{amType},
+        AMSTATUS=#{amStatus},
+        AMMSG=#{amMsg}
+       WHERE TRXINDEX = #{trxIndex} ]]>
+	</update>
+
+	<update id="EditNewTranStatus" parameterType="UploadData">
+        <![CDATA[ UPDATE tmp001 
+        SET AMINCLUDE=#{amInclude},
+        AMTYPE=#{amType},
+        AMSTATUS=#{amStatus},
+        AMMSG=#{amMsg}
+       WHERE TRXINDEX = #{trxIndex} AND AMSTATUS<>2 ]]>
+	</update>
+
+	<update id="MarkDuplicateItems">
+     	<![CDATA[
+     	UPDATE tmp001
+     	SET AMSTATUS = 3,
+     	AMMSG = 'Duplicate'
+     	WHERE TMPREFTXNID IN (SELECT EVETXNID FROM sa102)
+     	OR TMPREFTXNID IN (SELECT EVETXNID FROM po102)
+     	OR TMPREFTXNID IN (SELECT EVETXNID FROM po302)
+     	OR TMPREFTXNID IN (SELECT EVETXNID FROM sa302)
+     	]]>
+	</update>
+
+	<update id="MarkDuplicateJournalLines">
+     	<![CDATA[
+     	UPDATE tmp003
+     	SET tmp003.ISDUP = 1
+     	WHERE tmp003.REFNUM IN
+     	(SELECT REFNUM FROM fe001)
+     	]]>
+	</update>
+	<update id="ClearIncludeList" parameterType="java.lang.Long">
+       <![CDATA[  UPDATE tmp001 
+        SET AMINCLUDE=0
+       WHERE USERID = #{value} ]]>
+	</update>
+
+	<delete id="DeleteTranLinesByType" parameterType="UploadData">
+       <![CDATA[  DELETE FROM tmp001 where AMSTATUS=#{amStatus} AND USERID=#{userId}]]>
+	</delete>
+
+	<select id="GetOpenTranLines" parameterType="UserSmallData"
+		resultType="UploadData">
+        <![CDATA[ SELECT tmp001.USERID, tmp001.BATCHID, tmp001.TRXINDEX, tmp001.AMINCLUDE, 
+        tmp001.AMTYPE, tmp001.SONUMBER, tmp001.PONUMBER, tmp001.CUSTOMERID, 
+        tmp001.VENDORID, tmp001.ITEMID, tmp001.AMSTATUS, tmp001.AMMSG,
+        tmp001.TMPDATE, tmp001.TMPNAME, tmp001.TMPTYPE,
+        tmp001.TMPSUBJECT, tmp001.TMPPRICE, tmp001.TMPQUANTITY, tmp001.TMPTOEMAIL, 
+        tmp001.TMPSHIPADDRESS, tmp001.TMPITEMTITLE, tmp001.TMPITEMID, tmp001.TMPSHIPAMT, 
+        tmp001.TMPINSURANCEAMT, tmp001.TMPTAXAMT, tmp001.TMPBUYERID, tmp001.TMPITEMURL, 
+        tmp001.TMPREFTXNID,
+        (tmp001.TMPPRICE * tmp001.TMPQUANTITY) as NETAMT
+        from tmp001 inner join tmp002 on
+        tmp001.BATCHID=tmp002.BATCHID
+        where tmp002.USERID=#{userId}]]>
+	</select>
+
+	<select id="GetChargesList" parameterType="UploadData"
+		resultType="UploadData">
+       <![CDATA[  SELECT a.USERID, a.BATCHID, a.TRXINDEX, a.AMINCLUDE, a.AMTYPE,
+        a.SONUMBER, a.PONUMBER, a.CUSTOMERID, a.VENDORID,
+        a.ITEMID, a.AMSTATUS, a.AMMSG,
+        a.TMPDATE, a.TMPNAME, a.TMPTYPE,
+        a.TMPSUBJECT, a.TMPPRICE, a.TMPQUANTITY, a.TMPTOEMAIL, a.TMPSHIPADDRESS,
+        a.TMPITEMTITLE, a.TMPITEMID, a.TMPSHIPAMT, a.TMPINSURANCEAMT,
+        a.TMPTAXAMT, a.TMPBUYERID, a.TMPITEMURL, a.TMPREFTXNID,
+        (a.TMPPRICE * a.TMPQUANTITY) as NETAMT
+        from tmp001 a inner join tmp002 b on
+        a.BATCHID = b.BATCHID
+        where a.AMINCLUDE=1 AND
+        b.USERID=}userId} AND a.AMSTATUS =1 AND
+        (a.AMTYPE=4 OR a.AMTYPE=5 OR a.AMTYPE=6 OR a.AMTYPE=7)
+        ORDER BY
+        a.CUSTOMERID ]]>
+	</select>
+
+	<delete id="DeleteUnmarkedTranLines" parameterType="UploadData">
+       <![CDATA[  
+           DELETE FROM tmp001 
+           where AMINCLUDE=0 AND USERID=#{userId} ]]>
+	</delete>
+
+	<delete id="DeleteAllJournalLines" parameterType="UserSmallData">
+       <![CDATA[
+        	DELETE FROM tmp003 WHERE USERID = #{userId}
+    	]]>
+	</delete>
+	<delete id="DeleteDuplicateJournalLines" parameterType="UserSmallData">
+       <![CDATA[
+        	DELETE FROM tmp003 WHERE ISDUP = 1
+        	AND USERID = #{userId}
+    	]]>
+	</delete>
+	<delete id="DeleteJournalLine" parameterType="JournalUploadData">
+       <![CDATA[
+        	DELETE FROM tmp003 WHERE
+        	USERID = #{userId} AND 
+        	REFNUM = #{refNum}
+    	]]>
+	</delete>
+	<select id="GetPaypalTran" parameterType="UploadParams"
+		resultType="UploadData">
+       <![CDATA[  SELECT a.USERID, a.BATCHID, a.TRXINDEX, a.AMINCLUDE, a.AMTYPE,
+        a.SONUMBER, a.PONUMBER, a.CUSTOMERID, a.VENDORID,
+        a.ITEMID, a.AMSTATUS, a.AMMSG,
+        a.TMPDATE, a.TMPNAME, TMPTYPE,
+        TMPSUBJECT, TMPPRICE, TMPQUANTITY, TMPTOEMAIL, TMPSHIPADDRESS,
+        TMPITEMTITLE, TMPITEMID, TMPSHIPAMT, TMPINSURANCEAMT,
+        TMPTAXAMT, TMPBUYERID, TMPITEMURL, TMPREFTXNID,
+        (TMPPRICE * TMPQUANTITY) as NETAMT
+        from tmp001 a inner join tmp002 b on
+        a.BATCHID = b.BATCHID
+        where b.USERID=#{userId} AND a.TRXINDEX=#{trxIndex} ]]>
+	</select>
+
+	<select id="GetJournalTran" parameterType="UserSmallData"
+		resultType="JournalUploadData">
+      	<![CDATA[
+      	
+      		SELECT a.TRANDATE, a.REFNUM, a.REFTYPE,
+      		a.OWNER1, a.OWNER2, a.ARGNAME1, a.AMOUNT,
+      		a.BALANCE, a.USERID, a.ISDUP, e.REFTYPENAME
+      		FROM tmp003 a INNER JOIN
+      			eve001 e
+      				ON a.REFTYPE = e.REFTYPEID
+      		WHERE a.USERID = #{userId}
+      	  
+      	]]>
+	</select>
+
+	<select id="GetJournalTranNoDups" parameterType="UserSmallData"
+		resultType="JournalUploadData">
+      	<![CDATA[
+      	
+      		SELECT a.TRANDATE, a.REFNUM, a.REFTYPE,
+      		a.OWNER1, a.OWNER2, a.ARGNAME1, a.AMOUNT,
+      		a.BALANCE, a.USERID, a.ISDUP, b.COSTACTINDEX,
+      		b.REFTYPENAME, b.INCACTINDEX
+      		FROM tmp003 a inner join eve001 b
+      			on a.REFTYPE = b.REFTYPEID
+      		WHERE a.USERID = #{userId}
+      			AND a.ISDUP = 0
+      	  
+      	]]>
+	</select>
+
+</mapper>

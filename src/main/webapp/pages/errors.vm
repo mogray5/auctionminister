@@ -1,0 +1,7 @@
+<table width="50%" align="center">
+  #foreach ($value in $actionErrors)  
+  <tr>
+    <td><img border="0" align="center" src="images/err.png"/></td><td>$value</td>
+  </tr>  
+  #end  
+</table

@@ -1,0 +1,8 @@
+#set($item1="#menulink('downloadesi.action' 'ESI Download' 'menulink')")
+#set($item2="#menulink('upcomma.action' 'Pending Eve Wallet' 'menulink')")
+#set($item3="#menulink('upjournal.action' 'Pending Eve Journal' 'menulink')")
+#set($item4="#menulink('uploadcosttypes.action' 'Cost Accounts' 'menulink')")
+#set($item5="#menulink('uploadincometypes.action' 'Income Accounts' 'menulink')")
+#set($item6="#menulink('upapikeys.action' 'API Keys' 'menulink')")
+#set($itemlist=[$item1, $item2, $item3, $item4, $item5, $item6])
+<br>

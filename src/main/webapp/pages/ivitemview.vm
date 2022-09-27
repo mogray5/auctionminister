@@ -1,0 +1,82 @@
+#parse("/pages/top.vm")
+#parse("/pages/workmenu.vm")
+#hmenu($itemlist '100%' "right" "workmenu" 1)
+#parse("/pages/inventorymenu.vm")
+#hmenu($itemlist '100%' "right" "submenu" 2)
+
+#if ($isSecure=="S")
+	<br><br>
+	
+	#mainheader("Item Lookup")
+	
+	#sectionheader("Item Item Detail for:  $!Item.getItemId()")
+	
+	
+	<form name="frmEdit" method="POST" action="ivedititem.action">
+		<input type="hidden" name="itemId" value="$!Item.getItemId()"/>
+	</form>
+	
+	<form name="frmLookup" method="POST" action="ivdoitemlookup.action">
+		<input type="hidden" name="page" value="1"/>
+	</form>
+	
+	
+	#set($maint1="#menulink('javascript:document.frmEdit.submit();' 'Edit' 'menulink')")
+	#set($maint2="#menulink('javascript:document.frmLookup.submit();' 'Back' 'menulink')")
+	#set($itemlist=[$maint1, $maint2])
+	#hmenu($itemlist '100px' "center" "submenu" 99)
+	
+	<br>
+		
+	#set($index = 0)
+	<div align="center">
+	
+	
+	<table class="formtable">
+		<tr>
+		<td class="labeltext">Item Id</td>
+		<td>$!Item.getItemId()</td>
+		</tr><tr>
+		<td class="labeltext">Description</td>
+		<td>$!Item.getItemDesc()</td>
+		</tr><tr>
+		<td class="labeltext">Type</td>
+		#if($Item.getItemTypeId()==1)
+			<td>ITEM</td>
+		#else
+			<td>LOT/KIT</td>
+		#end
+
+		</tr><tr>
+		<td class="labeltext">Class</td>
+		<td>$!Item.getItemClassName()</td>
+		</tr><tr>
+		<td class="labeltext">Current Cost</td>
+		<td>$!Item.getCurrentCost()</td>
+		</tr><tr>
+		<td class="labeltext">List Price</td>
+		<td>$!Item.getListPrice()</td>
+		</tr><tr>
+		<td class="labeltext">Shipping Weight</td>
+		<td>$!Item.getShippingWeight()</td>
+		</tr><tr>
+		<td class="labeltext">Create Date</td>
+		<td>$!Item.getCreateDateString()</td>		
+		</tr><tr>
+		<td class="labeltext">Bin Number</td>
+		<td>$!Item.getBinNumber()</td>
+		</tr><tr>
+		<td class="labeltext">Primary Vendor</td>
+		<td>$!Item.getPrimaryVendor()</td>
+		</tr>
+	</table>
+	</div>
+
+#else
+	#denied()
+#end
+
+
+
+
+#parse("/pages/bottom.vm")

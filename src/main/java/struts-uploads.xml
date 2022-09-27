@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+
+	<package name="uploads" extends="default">
+	
+		    <!-- UPLOAD ACTIONS -->
+	    <action name="uploadmain" class="com.auctionminister.action.system.SecureAction">
+    	    <result name="success" type="velocity">
+            	/pages/amupload.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+	    <action name="upstartnew" class="com.auctionminister.action.system.SecureAction">
+    	    <result name="success" type="velocity">
+            	/pages/upcomma.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+	    <action name="upcomma" class="com.auctionminister.action.uploads.UpProcessDirectorAction">
+    	    <result name="success" type="velocity">
+            	/pages/upcomma.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+    	    <result name="none" type="chain">
+            	uploadtranlines
+            </result>
+	    </action>
+	    <action name="uploadtranlines" class="com.auctionminister.action.uploads.UpLoadTranLines">
+    	    <result name="success" type="velocity">
+            	/pages/upprocess.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+	    <action name="updoupload" class="com.auctionminister.action.uploads.CommaUploadAction">
+    	    <result name="input" type="velocity">
+            	/pages/upcomma.vm
+            </result>
+    	    <result name="success" type="chain">
+            	uploadtranlines
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+   	    <action name="upsubmital" class="com.auctionminister.action.uploads.UpLoadSubmitalAction">
+    	    <result name="input" type="velocity">
+            	/pages/upprocess.vm
+            </result>
+    	    <result name="success" type="velocity">
+            	/pages/upsubmit.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+   	    <action name="upsave" class="com.auctionminister.action.uploads.ProcessUploadAction">
+    	    <result name="input" type="velocity">
+            	/pages/upprocess.vm
+            </result>
+    	   <result name="success" type="chain">
+            	uploadtranlines
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+   	    <action name="updosubmital" class="com.auctionminister.action.uploads.UploadApplyAction">
+    	    <result name="input" type="velocity">
+            	/pages/upsumital.vm
+            </result>
+    	    <result name="success" type="chain">
+            	upcomma
+            </result>
+           <interceptor-ref name="recordCheckStack"/>
+	    </action>
+	    <action name="updeleteintegrated" class="com.auctionminister.action.uploads.UpDeleteIntegratedAction">
+    	    <result name="input" type="velocity">
+            	/pages/upprocess.vm
+            </result>
+    	    <result name="success" type="chain">
+            	upcomma
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+	    <action name="updeletenew" class="com.auctionminister.action.uploads.UpDeleteNewAction">
+    	    <result name="input" type="velocity">
+            	/pages/upprocess.vm
+            </result>
+    	    <result name="success" type="chain">
+            	upcomma
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+	    <action name="updeleteerrors" class="com.auctionminister.action.uploads.UpDeleteErrorsAction">
+    	    <result name="input" type="velocity">
+            	/pages/upprocess.vm
+            </result>
+    	    <result name="success" type="chain">
+            	upcomma
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+	    <action name="updeleteunmarked" class="com.auctionminister.action.uploads.UpDeleteUnmarkedAction">
+    	    <result name="success" type="chain">
+            	upcomma
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+	    <action name="updoassignso" class="com.auctionminister.action.uploads.UpAssignSoAction">
+            <result name="input" type="velocity">
+                /pages/upassignso.vm
+             </result>
+    	    <result name="success" type="chain">
+            	upsave
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+	    <action name="upassignso" class="com.auctionminister.action.uploads.UpLoadAssignSoAction">
+            <result name="success" type="velocity">
+            	/pages/upassignso.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+	    <action name="upjournal" class="com.auctionminister.action.uploads.UpJournalAction">
+	    	<result name="input" type="velocity">
+            	/pages/upjournal.vm
+            </result>
+             <result name="success" type="velocity">
+            	/pages/upjournal.vm
+            </result>
+             <interceptor-ref name="recordCheckStack"/>
+	    </action>
+	    <action name="upapikeys" class="com.auctionminister.action.uploads.EditApiKeydAction">
+            <result name="input" type="velocity">
+            	/pages/upapikeys.vm
+            </result>
+            <result name="success" type="velocity">
+            	/pages/upapikeys.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+		<action name="uploadcosttypes" class="com.auctionminister.action.uploads.UpConfigureCostAccounts">
+            <result name="input" type="velocity">
+            	/pages/upassigncosttypes.vm
+            </result>
+            <result name="success" type="velocity">
+            	/pages/upassigncosttypes.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action> 
+	    <action name="upassigncosttypes" class="com.auctionminister.action.uploads.UpConfigureCostAccounts" method="doUpdate">
+            <result name="input" type="velocity">
+            	/pages/upassigncosttypes.vm
+            </result>
+            <result name="success" type="velocity">
+            	/pages/upassigncosttypes.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+	    <action name="uploadincometypes" class="com.auctionminister.action.uploads.UpConfigureIncomeAccounts">
+            <result name="input" type="velocity">
+            	/pages/upassignincometypes.vm
+            </result>
+            <result name="success" type="velocity">
+            	/pages/upassignincometypes.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+	    <action name="upassignincometypes" class="com.auctionminister.action.uploads.UpConfigureIncomeAccounts" method="doUpdate">
+            <result name="input" type="velocity">
+            	/pages/upassignincometypes.vm
+            </result>
+            <result name="success" type="velocity">
+            	/pages/upassignincometypes.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+	    <action name="downloadesi" class="com.auctionminister.action.uploads.EsiDownloadAction">
+            <result name="redirect" type="redirect">${url}</result>
+			<result name="success" type="velocity">
+            	/pages/downloadesi.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+	    <action name="esiauth" class="com.auctionminister.action.uploads.EsiAuthAction">
+    	    <result name="success" type="chain">
+            	downloadesi
+            </result>
+	    </action>
+	</package>
+		    
+</struts>
+	

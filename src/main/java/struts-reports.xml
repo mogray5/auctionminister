@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+
+	<package name="reports" extends="default">
+	
+	  <!-- REPORTS -->
+	        <action name="reportsmain" class="com.auctionminister.action.system.SecureAction">
+	    	        <result name="success" type="velocity">
+	            	    /pages/amreports.vm
+	                </result>
+	            <interceptor-ref name="defaultStackWithSecurity"/>
+		    </action>
+	        <action name="reportparams" class="com.auctionminister.action.reports.ReportParamsAction">
+	    	        <result name="input" type="velocity">
+	            	    /pages/amreports.vm
+	                </result>
+	    	        <result name="success" type="velocity">
+	            	    /pages/rptparams.vm
+	                </result>
+	            <interceptor-ref name="defaultStackWithSecurity"/>
+		    </action>
+	        <action name="rptprofitloss" class="com.auctionminister.action.reports.RptProfitLossAction">
+	   	        <result name="success" type="velocity">
+	           	    /pages/rptprofitloss.vm
+	            </result>
+	    	    <interceptor-ref name="defaultStackWithSecurity"/>
+		    </action> 
+	        <action name="rptprofitlossmonthly" class="com.auctionminister.action.reports.RptProfitLossMonthlyAction">
+	   	        <result name="success" type="velocity">
+	           	    /pages/rptprofitlossmonthly.vm
+	            </result>
+	        	<interceptor-ref name="defaultStackWithSecurity"/>
+		    </action> 
+		    <action name="rptitemactivitymonthly" class="com.auctionminister.action.reports.RptItemActivityMonthlyAction">
+	   	        <result name="success" type="velocity">
+	           	    /pages/rptitemactivitymonthly.vm
+	            </result>
+	        	<interceptor-ref name="defaultStackWithSecurity"/>
+		    </action> 
+	        <action name="rptstockstatus" class="com.auctionminister.action.reports.RptStockStatusAction">
+	    	    <interceptor-ref name="defaultStackWithSecurity"/>
+		    </action> 
+	        <action name="rptsalesbycustomer" class="com.auctionminister.action.reports.RptSalesByCustomerAction">
+	    	    <interceptor-ref name="defaultStackWithSecurity"/>
+		    </action> 
+	        <action name="rptsalesbyitem" class="com.auctionminister.action.reports.RptSalesByItemAction">
+	    	    <interceptor-ref name="defaultStackWithSecurity"/>
+		    </action> 
+	        <action name="rptopensalesorders" class="com.auctionminister.action.reports.RptOpenSalesOrdersAction">
+	    	    <interceptor-ref name="defaultStackWithSecurity"/>
+		    </action> 
+	        <action name="rptivvaluemonthly" class="com.auctionminister.action.reports.RptIvValueMonthlyAction">
+	    	    <interceptor-ref name="defaultStackWithSecurity"/>
+		    </action> 
+	        <action name="rptcashvaluemonthly" class="com.auctionminister.action.reports.RptCashValueMonthlyAction">
+	    	    <interceptor-ref name="defaultStackWithSecurity"/>
+		    </action> 
+	        <action name="rptpurchasesbyvendor" class="com.auctionminister.action.reports.RptPurchasesByVendorAction">
+	    	    <interceptor-ref name="defaultStackWithSecurity"/>
+		    </action> 
+		    <action name="rptpurchasesbyitem" class="com.auctionminister.action.reports.RptPurchasesByItemAction">
+	    	    <interceptor-ref name="defaultStackWithSecurity"/>
+		    </action> 
+	        <action name="rptopenpurchaseorders" class="com.auctionminister.action.reports.RptOpenPurchaseOrdersAction">
+	    	    <interceptor-ref name="defaultStackWithSecurity"/>
+		    </action> 
+	        <action name="rptnonmerchcharges" class="com.auctionminister.action.reports.RptNonMerchChargesAction">
+	    	    <interceptor-ref name="defaultStackWithSecurity"/>
+		    </action> 
+		    
+		    </package>
+		    
+</struts>

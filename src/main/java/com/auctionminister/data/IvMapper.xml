@@ -1,0 +1,443 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+	<mapper namespace="com.auctionminister.data">
+ 
+        <resultMap id="ItemResults" type="ItemData">
+            <id property="itemId" column="ITEMID"/>
+            <result property="itemDesc" column="ITEMDESC"/>
+            <result property="itemTypeId" column="ITEMTYPE"/>
+            <result property="itemClassId" column="ITEMCLASSID"/>            
+            <result property="itemClassName" column="CLASSNAME"/>
+            <result property="currentCost" column="CURRCOST"/>
+            <result property="listPrice" column="LISTPRICE"/>
+            <result property="shippingWeight" column="SHIPPINGWEIGHT"/>
+            <result property="offsetIndex" column="IVOFFINDEX"/>
+            <result property="returnsIndex" column="RETURNSINDEX"/>
+            <result property="cogsIndex" column="COGSINDEX"/>
+            <result property="createDate" column="CREATEDATE"/>
+            <result property="binNumber" column="BINNBR"/>
+            <result property="primaryVendor" column="PRIMVENDORID"/>
+            <result property="qtyOnHand" column="QTYONHAND"/>
+            <result property="qtyLastOrder" column="QTYLASTORDER"/>
+            <result property="qtyReturned" column="QTYRETURNED"/>
+            <result property="qtySold" column="QTYSOLD"/>
+            <result property="lastOrderDate" column="LASTORDERDT"/>
+            <result property="lastOrderVendor" column="LASTORDERVENDORID"/>
+            <result property="lastOrderVendorName" column="VENDORNAME"/>
+            <result property="isAssembly" column="ISASSEMBLY"/>
+            <result property="buildCost" column="BUILDCOST"/>
+            <result property="buildTime" column="BUILDTIME"/>
+            <result property="buildQty" column="BUILDQTY"/>
+        </resultMap>
+
+        <select id="GetItemList" parameterType="SearchParams" resultMap="ItemResults">
+          <![CDATA[       select 
+            iv001.ITEMID,
+            iv001.ITEMDESC,
+            iv001.ITEMTYPE,
+            iv001.ITEMCLASSID,
+            iv004.CLASSNAME,
+            iv001.CURRCOST,
+            iv001.LISTPRICE,
+            iv001.SHIPPINGWEIGHT,
+            iv001.IVINDEX,
+            iv001.IVOFFINDEX,
+            iv001.RETURNSINDEX,
+            iv001.COGSINDEX,
+            iv001.CREATEDATE,
+            iv001.BINNBR,
+            iv001.PRIMVENDORID,
+            iv001.QTYLASTORDER,
+            iv001.QTYONHAND,
+            iv001.QTYRETURNED,
+            iv001.QTYSOLD,
+            iv001.LASTORDERDT,
+            iv001.LASTORDERVENDORID,
+            vn001.VENDORNAME,
+            iv001.ISASSEMBLY,
+            COALESCE(build.BUILDCOST, 0) AS BUILDCOST,
+            iv001.BUILDTIME,
+            iv001.BUILDQTY
+            FROM iv001 left outer join iv004
+            ON iv001.USERID = iv004.USERID AND
+            iv001.ITEMCLASSID = iv004.CLASSID left outer join
+            vn001 on iv001.LASTORDERVENDORID = vn001.VENDORID AND
+            iv001.USERID = vn001.USERID
+            left outer join 
+            (
+               select iv003.ITEMID, iv003.USERID,
+               SUM(iv003.ELEMENTQTY * iv001.CURRCOST) AS BUILDCOST
+               FROM iv001 INNER JOIN iv003
+               ON iv001.ITEMID = iv003.ELEMENTITEMID AND
+               iv001.USERID = iv003.USERID
+               GROUP BY iv003.ITEMID, iv003.USERID
+            ) build
+            ON build.ITEMID = iv001.ITEMID AND
+            build.USERID = iv001.USERID
+            WHERE iv001.USERID = #{userId} AND iv001.ITEMID like #{itemId}
+            ORDER BY iv001.ITEMID ]]>
+      </select>
+      
+      <select id="GetItemListExclude" parameterType="SearchParams" resultMap="ItemResults">
+          <![CDATA[       select 
+            iv001.ITEMID,
+            iv001.ITEMDESC,
+            iv001.ITEMTYPE,
+            iv001.ITEMCLASSID,
+            iv004.CLASSNAME,
+            iv001.CURRCOST,
+            iv001.LISTPRICE,
+            iv001.SHIPPINGWEIGHT,
+            iv001.IVINDEX,
+            iv001.IVOFFINDEX,
+            iv001.RETURNSINDEX,
+            iv001.COGSINDEX,
+            iv001.CREATEDATE,
+            iv001.BINNBR,
+            iv001.PRIMVENDORID,
+            iv001.QTYLASTORDER,
+            iv001.QTYONHAND,
+            iv001.QTYRETURNED,
+            iv001.QTYSOLD,
+            iv001.LASTORDERDT,
+            iv001.LASTORDERVENDORID,
+            vn001.VENDORNAME,
+            iv001.ISASSEMBLY,
+            COALESCE(build.BUILDCOST, 0) AS BUILDCOST,
+            iv001.BUILDTIME,
+            iv001.BUILDQTY
+            FROM iv001 left outer join iv004
+            ON iv001.USERID = iv004.USERID AND
+            iv001.ITEMCLASSID = iv004.CLASSID left outer join
+            vn001 on iv001.LASTORDERVENDORID = vn001.VENDORID AND
+            iv001.USERID = vn001.USERID
+            left outer join 
+            (
+               select iv003.ITEMID, iv003.USERID,
+               SUM(iv003.ELEMENTQTY * iv001.CURRCOST) AS BUILDCOST
+               FROM iv001 INNER JOIN iv003
+               ON iv001.ITEMID = iv003.ELEMENTITEMID AND
+               iv001.USERID = iv003.USERID
+               GROUP BY iv003.ITEMID, iv003.USERID
+            ) build
+            ON build.ITEMID = iv001.ITEMID AND
+            build.USERID = iv001.USERID
+            WHERE iv001.USERID = #{userId} AND iv001.ITEMID not like #{itemId}
+            ORDER BY iv001.ITEMID ]]>
+      </select>
+      
+        <select id="GetItemAssemblies" parameterType="UserSmallData" resultMap="ItemResults">
+          <![CDATA[       select 
+            iv001.ITEMID,
+            iv001.ITEMDESC,
+            iv001.ITEMTYPE,
+            iv001.ITEMCLASSID,
+            iv004.CLASSNAME,
+            iv001.CURRCOST,
+            iv001.LISTPRICE,
+            iv001.SHIPPINGWEIGHT,
+            iv001.IVINDEX,
+            iv001.IVOFFINDEX,
+            iv001.RETURNSINDEX,
+            iv001.COGSINDEX,
+            iv001.CREATEDATE,
+            iv001.BINNBR,
+            iv001.PRIMVENDORID,
+            iv001.QTYLASTORDER,
+            iv001.QTYONHAND,
+            iv001.QTYRETURNED,
+            iv001.QTYSOLD,
+            iv001.LASTORDERDT,
+            iv001.LASTORDERVENDORID,
+            vn001.VENDORNAME,
+            iv001.ISASSEMBLY,
+            COALESCE(build.BUILDCOST, 0) AS BUILDCOST,
+            iv001.BUILDTIME,
+            iv001.BUILDQTY
+            FROM iv001 left outer join iv004
+            ON iv001.USERID = iv004.USERID AND
+            iv001.ITEMCLASSID = iv004.CLASSID left outer join
+            vn001 on iv001.LASTORDERVENDORID = vn001.VENDORID AND
+            iv001.USERID = vn001.USERID
+            left outer join 
+            (
+               select iv003.ITEMID, iv003.USERID,
+               SUM(iv003.ELEMENTQTY * iv001.CURRCOST) AS BUILDCOST
+               FROM iv001 INNER JOIN iv003
+               ON iv001.ITEMID = iv003.ELEMENTITEMID AND
+               iv001.USERID = iv003.USERID
+               GROUP BY iv003.ITEMID, iv003.USERID
+            ) build
+            ON build.ITEMID = iv001.ITEMID AND
+            build.USERID = iv001.USERID
+            WHERE iv001.USERID = #{userId} AND iv001.ISASSEMBLY = 1
+            ORDER BY iv001.ITEMID ]]>
+      </select>
+        
+        <select id="GetItemListCount" parameterType="SearchParams" resultType="java.lang.Long">
+          <![CDATA[ select count(*)
+            FROM iv001
+            WHERE USERID = #{userId} AND ITEMID like #{itemId}
+           ]]>
+      </select>
+      
+      <select id="GetItemClassList" parameterType="UserSmallData" resultType="com.auctionminister.data.ItemClassData">
+          <![CDATA[ select CLASSID as ClassId, CLASSNAME as ClassName,
+            CLASSDESC as ClassDesc
+            from iv004
+            WHERE USERID = #{userId}
+            ORDER BY CLASSNAME ]]>
+      </select>
+
+      <select id="GetItem" parameterType="SearchParams" resultMap="ItemResults">
+        <![CDATA[        select 
+            iv001.ITEMID,
+            iv001.ITEMDESC,
+            iv001.ITEMTYPE,
+            iv001.ITEMCLASSID,
+            iv004.CLASSNAME,
+            iv001.CURRCOST,
+            iv001.LISTPRICE,
+            iv001.SHIPPINGWEIGHT,
+            iv001.IVINDEX,
+            iv001.IVOFFINDEX,
+            iv001.RETURNSINDEX,
+            iv001.COGSINDEX,
+            iv001.CREATEDATE,
+            iv001.BINNBR,
+            iv001.PRIMVENDORID,
+            iv001.QTYLASTORDER,
+            iv001.QTYONHAND,
+            iv001.QTYRETURNED,
+            iv001.QTYSOLD,
+            iv001.LASTORDERDT,
+            iv001.LASTORDERVENDORID,
+            vn001.VENDORNAME,
+            iv001.ISASSEMBLY,
+            COALESCE(build.BUILDCOST, 0) AS BUILDCOST,
+            iv001.BUILDTIME,
+            iv001.BUILDQTY
+            FROM iv001 left outer join iv004
+            ON iv001.USERID = iv004.USERID AND
+            iv001.ITEMCLASSID = iv004.CLASSID left outer join
+            vn001 on iv001.LASTORDERVENDORID = vn001.VENDORID AND
+            iv001.USERID = vn001.USERID
+            left outer join 
+            (
+               select iv003.ITEMID, iv003.USERID,
+               SUM(iv003.ELEMENTQTY * iv001.CURRCOST) AS BUILDCOST
+               FROM iv001 INNER JOIN iv003
+               ON iv001.ITEMID = iv003.ELEMENTITEMID AND
+               iv001.USERID = iv003.USERID
+               GROUP BY iv003.ITEMID, iv003.USERID
+            ) build
+            ON build.ITEMID = iv001.ITEMID AND
+            build.USERID = iv001.USERID
+            WHERE iv001.USERID = #{userId} AND iv001.ITEMID = #{itemId}
+            ORDER BY iv001.ITEMID ]]>
+      </select>
+	<select id="GetAssemblyQtyForPeriod" parameterType="DayLookupParams" resultType="com.auctionminister.data.ItemAssembly">
+		 <![CDATA[
+		 SELECT ITEMID, ELEMENTITEMID, PERIODQTY, BUILDTIME
+		 FROM (        
+		 SELECT i1.ITEMID, 
+		 	i3.ELEMENTITEMID, 
+		 	COALESCE(ROUND(((#{days}*24) * (sum(i3.elementqty)*i1.buildqty)) / i1.buildtime), 0) as PERIODQTY, 
+		 	i1.BUILDTIME
+		FROM iv001 i1
+			inner join iv003 i3
+				on i1.itemid = i3.itemid
+			inner join iv001 i4
+				on i3.elementitemid = i4.itemid
+		 where i1.isassembly = 1
+		 	and i1.USERID = #{userId}
+		 	and i1.BUILDTIME > 0
+		 group by i1.itemid, i3.elementitemid,
+		 i1.buildqty, i1.buildtime
+		 ) SUBQ
+		 WHERE PERIODQTY > 0
+		 order by ITEMID, ITEMID]]>
+	</select>
+	<select id="GetAssemblyQtyTotalsForPeriod" parameterType="DayLookupParams" resultType="com.auctionminister.data.ItemAssembly">
+		 <![CDATA[      
+		 SELECT ELEMENTITEMID, SUM(PERIODQTY) AS PERIODQTY
+		 FROM (  
+		 SELECT 
+		 	i3.ELEMENTITEMID, 
+		 	COALESCE(ROUND(((#{days}*24) * (sum(i3.elementqty)*i1.buildqty)) / i1.buildtime), 0) as PERIODQTY
+		FROM iv001 i1
+			inner join iv003 i3
+				on i1.itemid = i3.itemid
+			inner join iv001 i4
+				on i3.elementitemid = i4.itemid
+		 where i1.isassembly = 1
+		 	and i1.USERID = #{userId}
+		 	and i1.BUILDTIME > 0
+		 group by i3.elementitemid,
+		 i1.buildqty, i1.buildtime) SUBQ
+		 GROUP BY ELEMENTITEMID
+		 ORDER BY SUM(PERIODQTY) DESC;]]>
+	</select>
+	
+      <insert id="AddItemClass" parameterType="ItemClassData">
+          <![CDATA[ insert into iv004 (USERID, CLASSNAME, CLASSDESC)
+            VALUES(#{userId}, #{className}, #{classDesc})]]>
+      </insert>
+
+      <update id="EditItemClass" parameterType="ItemClassData">
+          <![CDATA[ update iv004 set CLASSNAME=#{className}, 
+          CLASSDESC=#{classDesc}
+          WHERE USERID=#{userId} AND CLASSID=#{classId}]]>
+      </update>
+      
+      <select id="GetItemClassByName" parameterType="ItemClassData" resultType="ItemClassData">
+          <![CDATA[ select CLASSID as ClassId, CLASSNAME as ClassName,
+            CLASSDESC as ClassDesc
+            from iv004
+            WHERE USERID = #{userId} AND CLASSNAME=#{className}]]>
+      </select>
+      
+       <select id="GetItemAssembly" parameterType="SearchParams" resultType="com.auctionminister.data.ItemAssembly">
+          <![CDATA[ select USERID as UserID, 
+          	ITEMID as ItemID, ELEMENTITEMID as ElementITemID, 
+          	ELEMENTQTY as ElementQty
+            from iv003
+            WHERE USERID = #{userId} AND ITEMID=#{itemId}]]>
+      </select>
+
+      <select id="GetItemClassById" parameterType="ItemClassData" resultType="com.auctionminister.data.ItemClassData">
+          <![CDATA[ select CLASSID as ClassId, CLASSNAME as ClassName,
+            CLASSDESC as ClassDesc
+            from iv004
+            WHERE USERID = #{userId} AND CLASSID=#{classId}]]>
+      </select>
+      
+      <delete id="DeleteItemClassA" parameterType="ItemClassData">
+          <![CDATA[ delete FROM iv004 
+           WHERE USERID=#{userId} AND CLASSID=#{classId}]]>
+      </delete>
+      
+      <update id="DeleteItemClassB" parameterType="ItemClassData">
+          <![CDATA[ update iv001 set ITEMCLASSID=0 
+           WHERE USERID=#{userId} AND CLASSID=#{classId}]]>
+      </update>
+
+      <insert id="AddItem" parameterType="ItemData">
+        <![CDATA[ insert into iv001 (USERID,
+            ITEMID,
+            ITEMDESC,
+            ITEMTYPE,
+            ITEMCLASSID,
+            CURRCOST,
+            LISTPRICE,
+            SHIPPINGWEIGHT,
+            IVINDEX,
+            IVOFFINDEX,
+            RETURNSINDEX,
+            COGSINDEX,
+            CREATEDATE,
+            BINNBR,
+            PRIMVENDORID,
+            QTYLASTORDER,
+            QTYONHAND,
+            QTYRETURNED,
+            QTYSOLD,
+            LASTORDERDT,
+            ISASSEMBLY,
+            BUILDTIME,
+            BUILDQTY)
+            VALUES(#{userId}, #{itemId},
+            #{itemDesc}, #{itemTypeId},
+            #{itemClassId}, #{currentCost},
+            #{listPrice}, #{shippingWeight},
+            #{ivIndex}, #{offsetIndex},
+            #{returnsIndex}, #{cogsIndex},
+            #{createDate}, #{binNumber},
+            #{primaryVendor}, #{qtyLastOrder},
+            #{qtyOnHand}, #{qtyReturned},
+            #{qtySold},
+            #{lastOrderDate},
+            #{isAssembly},
+            #{buildTime},
+            #{buildQty}) ]]>
+      </insert>
+
+	  <insert id="AddAssemblyElement" parameterType="ItemAssembly">
+	  	 INSERT INTO iv003 (USERID, 
+	  	 		ITEMID, 
+	  	 		ELEMENTITEMID, 
+	  	 		ELEMENTQTY)
+	  	 SELECT USERID,
+	  	 		#{itemID} as Item,
+	  	 		#{elementItemID} as element,
+	  	 		#{elementQty} as qty
+	  	 FROM sy001 
+	  	 WHERE USERID = #{userID}
+	  	 	AND NOT EXISTS 
+	  	 	(
+	  	 		SELECT 'X' FROM iv003 WHERE ITEMID = #{itemID} AND ELEMENTITEMID = #{elementItemID}
+	  	 			AND USERID = #{userID}
+	  	 	)
+	  </insert>
+	 
+	 <delete id="DeleteAssemblyElement" parameterType="ItemAssembly">
+	 	<![CDATA[DELETE FROM iv003 
+	 		WHERE ITEMID = #{itemID} 
+	 		AND ELEMENTITEMID = #{elementItemID}
+	  	 	AND USERID = #{userID}]]>
+	 </delete>
+     
+      <update id="EditItem" parameterType="ItemData">
+        <![CDATA[ update iv001 
+            set ITEMDESC=#{itemDesc},
+            ITEMTYPE=#{itemTypeId},
+            ITEMCLASSID=#{itemClassId},
+            CURRCOST=#{currentCost},
+            LISTPRICE=#{listPrice},
+            SHIPPINGWEIGHT=#{shippingWeight},
+            IVINDEX=#{ivIndex},
+            IVOFFINDEX=#{offsetIndex},
+            RETURNSINDEX=#{returnsIndex},
+            COGSINDEX=#{cogsIndex},
+            BINNBR=#{binNumber},
+            PRIMVENDORID=#{primaryVendor},
+            QTYLASTORDER=#{qtyLastOrder},
+            QTYONHAND=#{qtyOnHand},
+            QTYRETURNED=#{qtyReturned},
+            QTYSOLD=#{qtySold},
+            LASTORDERDT=#{lastOrderDate},
+            LASTORDERVENDORID=#{lastOrderVendor},
+            ISASSEMBLY=#{isAssembly},
+            BUILDTIME = #{buildTime},
+            BUILDQTY = #{buildQty}
+           where USERID=#{userId} and ITEMID=#{itemId} ]]>
+      </update>
+      
+      <update id="AdjustOnHand" parameterType="AdjustItemParams">
+        <![CDATA[ update iv001 
+            set QTYONHAND=QTYONHAND + #{adjustVal}
+           where USERID=#{userId} and ITEMID=#{itemId} ]]>
+      </update>
+
+      <update id="AdjustQtySold" parameterType="AdjustItemParams">
+        <![CDATA[ update iv001 
+            set QTYSOLD=QTYSOLD + #{adjustVal}
+           where USERID=#{userId} and ITEMID=#{itemId} ]]>
+      </update>
+
+      <update id="AdjustQtyReturned" parameterType="AdjustItemParams">
+        <![CDATA[ update iv001 
+            set QTYRETURNED=QTYRETURNED + #{adjustVal}
+           where USERID=#{userId} and ITEMID=#{itemId} ]]>
+      </update>
+
+	<update id="AdjustListPrice" parameterType="AdjustItemParams">
+        <![CDATA[ update iv001 
+            set LISTPRICE= #{adjustVal}
+           where USERID=#{userId} and ITEMID=#{itemId} ]]>
+      </update>
+
+	</mapper>

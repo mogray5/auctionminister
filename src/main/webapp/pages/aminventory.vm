@@ -1,0 +1,10 @@
+#parse("/pages/top.vm")
+#parse("/pages/workmenu.vm")
+
+#hmenu($itemlist '100%' "right" "workmenu" 1)
+
+#parse("/pages/inventorymenu.vm")
+
+#hmenu($itemlist "100%" "right" "submenu" 99)
+
+#parse("/pages/bottom.vm")

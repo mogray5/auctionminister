@@ -1,0 +1,54 @@
+#parse("/pages/amupload.vm")
+
+
+<br><br><br>
+
+#if ($isSecure=="S")
+
+	<div align="center">
+	#mainheader("Eve Download")
+	#sectionheader("Start New Download")
+
+ 	<form name="frmUpload" action="updoupload.action" method="POST" enctype="multipart/form-data">
+ 	
+ 	<!-- input type="image" src="images/next.png" -->
+
+
+	#startbaseinfo("Importing Eve Wallet Data." 600)
+	<p class="msgblock">
+	TODO
+	</p><br>
+	#endbaseinfo()
+
+	<br><br>
+	<table width="350" border="0" cellpadding="3" cellspacing="0">
+	  <tr>
+		<td align="center">
+			#menulink("#" "Download Using Eve API" "menulink")
+		</td>
+		</tr>
+        <tr><td align="center"><br/><h3>OR</h3><br/></td></tr>
+        </td>
+		<tr>
+	    <td>Select File to Upload<br/>
+	     <input type="file" name="FileName" value="Browse..." size="50"/></td>
+		</tr>
+	 </table>
+	</div>
+	 <br>
+
+ 	#set($maint1="#menulink('javascript:document.frmUpload.submit();' 'Next' 'menulink')")
+	#set($itemlist=[$maint1])
+	#hmenu($itemlist '70px' "center" "submenu" 99)
+
+
+	 </form>
+	 
+	 <br><br>
+	 $Status
+
+#else
+	#denied()
+#end
+
+#parse("/pages/bottom.vm")

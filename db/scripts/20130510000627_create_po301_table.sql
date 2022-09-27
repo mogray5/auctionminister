@@ -1,0 +1,23 @@
+--// create po301 table
+-- Migration SQL that makes the change goes here.
+
+CREATE TABLE po301 
+(
+  DOCID NUMERIC(20) NOT NULL DEFAULT 0,
+  PONUMBER NUMERIC(20) NOT NULL DEFAULT 0,
+  VENDORID INTEGER NOT NULL DEFAULT 0,
+  PODATE date NOT NULL,
+  CONSTRAINT PK_PO301 PRIMARY KEY (DOCID,PONUMBER) USING INDEX TABLESPACE pg_default
+) 
+WITH (
+  OIDS = FALSE
+)
+;
+
+ALTER TABLE po301 OWNER TO auctionminister;
+
+--//@UNDO
+-- SQL to undo the change goes here.
+
+
+DROP TABLE po301;

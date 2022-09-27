@@ -1,0 +1,50 @@
+#parse("/pages/top.vm")
+#parse("/pages/workmenu.vm")
+#hmenu($itemlist '100%' "right" "workmenu" 1)
+#parse("/pages/pomenu.vm")
+#hmenu($itemlist '100%' "right" "submenu" 99)
+
+#if ($isSecure=="S")
+	<br><br>
+	#mainheader("Vendor Maintenence")
+	#sectionheader("Edit Vendor")
+
+	<form name="frmVendor" method="POST" action="podoaddvendor.action">
+	
+	<input type="hidden" name="VendorId" value="$!VendorData.getVendorId()"/>
+	
+	#set($maint1="#menulink('javascript:document.frmVendor.submit();' 'Save' 'menulink')")
+	#set($maint2="#menulink('povendormaint.action' 'Back' 'menulink')")
+	#set($itemlist=[$maint1, $maint2])
+	#hmenu($itemlist '150px' "center" "submenu" 99)
+	
+	<br>
+	
+	#formstart("500px" "center")
+	
+		#textinput("Vendor Name" "VendorName" $!VendorData.getVendorName() 50)
+
+		#startddinput("Status" "status")
+			#ddoption("Active" 1 ".")
+			#ddoption("Stopped" 0 "")
+		#endddinput()
+
+		#textinput("Tax ID" "TaxId" "$!VendorData.getTaxId()" 20)
+		#textinput("Street Line 1" "Address1" $!VendorData.getAddress1() 50)
+		#textinput("Street Line 2" "Address2" $!VendorData.getAddress2() 50)
+		#textinput("Street Line 3" "Address3" $!VendorData.getAddress3() 50)
+		#textinput("City" "City" $!VendorData.getCity() 25)
+		#textinput("State" "State" $!VendorData.getState() 10)
+		#textinput("Zip Code" "Zip" $!VendorData.getZip() 10)
+		#textinput("Country" "Country" $!VendorData.getCountry() 25)
+		#textinput("Phone 1" "Phone1" $!VendorData.getPhone1() 15)
+		#textinput("Phone 2" "Phone2" $!VendorData.getPhone2() 15)
+		#textinput("Fax" "Fax" $!VendorData.getFax() 15)
+
+	#formend()
+	</form>
+#else
+	#denied()
+#end
+
+#parse("/pages/bottom.vm")

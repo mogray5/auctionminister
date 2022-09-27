@@ -1,0 +1,41 @@
+--// create vn001 table
+-- Migration SQL that makes the change goes here.
+
+CREATE SEQUENCE vn001_seq
+   INCREMENT 1
+   START 1;
+   
+ALTER TABLE vn001_seq OWNER TO auctionminister;
+
+CREATE TABLE vn001 
+(
+  USERID SMALLINT NOT NULL DEFAULT 0,
+  VENDORID INTEGER NOT NULL DEFAULT nextval('vn001_seq'::regclass),
+  VENDORNAME varchar(50) NOT NULL DEFAULT '',
+  TAXID varchar(25) NOT NULL DEFAULT '',
+  ADDRESS1 varchar(100) NOT NULL DEFAULT '',
+  ADDRESS2 varchar(100) NOT NULL DEFAULT '',
+  ADDRESS3 varchar(100) NOT NULL DEFAULT '',
+  CITY varchar(100) NOT NULL DEFAULT '',
+  STATE varchar(25) NOT NULL DEFAULT '',
+  ZIP varchar(15) NOT NULL DEFAULT '',
+  COUNTRY varchar(100) NOT NULL DEFAULT '',
+  PHONE1 varchar(25) NOT NULL DEFAULT '',
+  PHONE2 varchar(25) NOT NULL DEFAULT '',
+  FAX varchar(25) NOT NULL DEFAULT '',
+  STATUS SMALLINT NOT NULL DEFAULT 1,
+  CONSTRAINT PK_VN001 PRIMARY KEY (VENDORID) USING INDEX TABLESPACE pg_default,
+  CONSTRAINT UK_VN001_1 UNIQUE (VENDORNAME,USERID) USING INDEX TABLESPACE pg_default
+) 
+WITH (
+  OIDS = FALSE
+)
+;
+
+ALTER TABLE vn001 OWNER TO auctionminister;
+
+--//@UNDO
+-- SQL to undo the change goes here.
+
+DROP TABLE vn001;
+DROP SEQUENCE vn001_seq;

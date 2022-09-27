@@ -1,0 +1,236 @@
+/* text styles */
+
+.baselink, .msgblock, .msgtitle, .menulink, .mainheader, .sectionheader
+{
+ 
+   FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif;
+
+}
+
+.baselink, .menulink, .msgtitle, TR.rowstyle1, .msgblock, TR.rowstyle2, TR.rowstyle3, .labeltext
+{
+   FONT-SIZE: 0.8em;
+}
+
+.baselink
+{
+    FONT-WEIGHT: bold;
+    COLOR:  #4d585b;
+}
+
+.menulink, .msgtitle, TR.rowstyle1
+{
+	text-align  :  center;
+    FONT-WEIGHT:  bold;
+}
+
+.msgblock, TR.rowstyle2, TR.rowstyle3
+{
+	COLOR:  #626366;
+}
+
+.msgtitle
+{
+	COLOR:  #626366;
+}
+
+.labeltext
+{
+	COLOR:  #990000;
+    FONT-WEIGHT:  bold;
+    vertical-align   : top;
+}
+
+.sectionheader
+{
+	width: 100%;
+	FONT-SIZE: 1.0em;;
+	text-align: center;
+	color:  #152ea8;
+}
+
+.subsectionheader
+{
+	FONT-SIZE: 1.0em;;
+	COLOR:  #626366;
+}
+
+.mainheader
+{
+	width: 100%;
+	text-align: center;
+	background-color: white;
+	color: #a7a8af;
+	FONT-WEIGHT:  bold;
+	FONT-SIZE: 1.0em;
+}
+
+A.baselink:link, A.baselink:visited, A.baselink:active, A.baselink:hover, A.menulink:link, A.menulink:visited, A.menulink:active, A.menulink:hover
+{
+    COLOR:  #4d585b;
+}
+
+A.baselink:hover
+{
+	text-decoration : underline;
+}
+
+A.menulink:hover
+{
+    background-color: white;
+}
+
+.left
+{
+     float:left;
+}
+
+.right
+{
+     padding:5px;
+     text-align:right;
+}
+
+
+/* table styles */
+
+TABLE, TABLE.fullwidth, TABLE.datatable1, Table.fullwithpadding, TABLE.formtable
+{
+   border :  0;
+   spacing:  0;
+   border-collapse:collapse;
+   font-size: 0.9em
+}
+
+
+TABLE.fullwidth, Table.fullwithpadding
+{
+   width : 100%;
+}
+
+Table.fullwithpadding .msgblock
+{
+	padding : 5;
+}
+
+TABLE.datatable1
+{
+   width : 600px;
+}
+
+TABLE.formtable
+{
+     padding : 5;
+     width : 50%;
+}
+
+
+TD.info, TD.vmenu, .outeredge, .menubackground, TD.hmenu, .centerdark
+{
+	background-color :#438ecc;
+}
+
+.menubackground
+{
+	vertical-align   : top;
+}
+
+TD.content
+{
+	background-color: #FFFFFF;
+	vertical-align   : top;
+}
+
+.info 
+{
+	/* width            : 4px; */
+	height			 : 4px;
+	
+}
+
+TD.vmenu, TD.hmenu, TD.workmenu, TD.submenu, TD.selected, TR.rowstyle1, .center, .centerdark
+{
+	text-align  :  center;
+	
+}
+
+TD.hmenu, TD.workmenu, TD.submenu, .outeredge, TR.rowstyle1
+{
+	vertical-align   : bottom;
+}
+
+.outeredge {
+	width	: 75%;
+}
+
+TD.workmenu
+{
+	background-color  :   #adb4ba;
+}
+
+TD.submenu, TD.selected
+{
+	background-color  :  #e1e7e8;
+}
+
+TD.divider
+{
+	background-color  : black;
+	height  : 2px;
+}
+
+TD.divider2
+{
+	background-color  : red;
+	height  : 4px;
+}
+
+TD.vmenu
+{
+	height  : 30px;
+	vertical-align   : middle;
+}
+
+TD.reportmenu
+{
+	background-color  : #d2d8d6;
+	height  : 30px;
+	vertical-align   : middle;
+}
+
+TD.menudivider
+{
+	background-color  : #626366;
+	height  : 4px;
+}
+
+TD.selected, TD.vmenu
+{
+	color: white;
+}
+
+TR.rowstyle1
+{
+	background-color  :  #dce2e0;
+}
+
+TR.rowstyle2
+{
+	background-color  :  silver;
+	
+}
+
+.upcode1
+{
+	background-color  :  #ffa0a0;
+}
+
+.upcode2
+{
+	background-color  :  #ffffb0;
+}
+
+.upcode3
+{
+	background-color  :  #ff50a8;
+}

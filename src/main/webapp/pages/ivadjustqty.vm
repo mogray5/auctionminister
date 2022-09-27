@@ -1,0 +1,50 @@
+#parse("/pages/top.vm")
+#parse("/pages/workmenu.vm")
+#hmenu($itemlist '100%' "right" "workmenu" 1)
+#parse("/pages/inventorymenu.vm")
+#hmenu($itemlist '100%' "right" "submenu" 2)
+
+#if ($isSecure=="S")
+	<br><br>
+	#mainheader("Adjust Item Quantities")
+
+<div align="center">
+	#itemsearchform("ivdoitemlookup2.action" "ivadjustqtyload.action" "Y")
+
+
+#if ($Item)
+
+	<br><br>
+	
+	#set($maint1="#menulink('javascript:document.frmAdjust.submit();' 'Apply' 'menulink')")
+	#set($maint2="#menulink('ivadjustqty.action' 'Clear' 'menulink')")
+	#set($itemlist=[$maint1, $maint2])
+	#hmenu($itemlist '150px' "center" "submenu" 99)
+
+	<br>
+	
+	<form name="frmAdjust" method="POST" action="ivdoadjustqty.action">
+	
+	#formstart("250px" "center")
+	#dataout("Item Id" "$Item.getItemId()") 
+	<input type="hidden" name="ItemId" value="$Item.getItemId()"/>
+	#dataout("Qty On Hand" "$Item.getQtyOnHand()")
+	#dataout("Current Cost" "$Item.getCurrentCost()") 
+	#textinput ("Qty To Adjust" "adjustVal" "0" 10)
+	#formend()
+	
+	</form>
+	
+#else
+	#startbaseinfo("Adjust Item Quantities" 300)
+		Use the form above to search for the item you want to adjust.
+	#endbaseinfo()
+#end
+
+</div>
+
+#else
+  #denied()
+#end
+
+#parse("/pages/bottom.vm")

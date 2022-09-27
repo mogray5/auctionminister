@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+
+	<package name="items" extends="default">
+	        <!-- INVENTORY ACTIONS -->
+        <action name="inventorymain" class="com.auctionminister.action.system.SecureAction">
+    	    <result name="success" type="velocity">
+            	/pages/aminventory.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+        <action name="ivedititem" class="com.auctionminister.action.inventory.ItemLoadAction">
+    	    <result name="success" type="velocity">
+            	/pages/ivedititem.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+        <action name="ivdoedititem" class="com.auctionminister.action.inventory.EditItemAction">
+    	    <result name="input" type="velocity">
+            	/pages/ivedititem.vm
+            </result>
+    	    <result name="success" type="velocity">
+            	/pages/ivedititemresults.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+        <action name="ivstatus" class="com.auctionminister.action.system.SecureAction">
+    	    <result name="success" type="velocity">
+            	/pages/ivitemstatus.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+        <action name="ivadjustqty" class="com.auctionminister.action.system.SecureAction">
+    	    <result name="success" type="velocity">
+            	/pages/ivadjustqty.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+        <action name="ivadjustqtyload" class="com.auctionminister.action.inventory.ItemLoadAction">
+    	    <result name="input" type="velocity">
+            	/pages/ivitemlookup.vm
+            </result>
+    	    <result name="success" type="velocity">
+            	/pages/ivadjustqty.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+        <action name="ivdoadjustqty" class="com.auctionminister.action.inventory.AdjustmentAction">
+    	    <result name="input" type="velocity">
+            	/pages/ivadjustqty.vm
+            </result>
+    	    <result name="success" type="velocity">
+            	/pages/ivedititemresults.vm
+            </result>
+            <interceptor-ref name="recordCheckStack"/>
+	    </action>
+        <action name="ivdoitemlookup" class="com.auctionminister.action.inventory.ItemLookupAction">
+    	    <result name="input" type="velocity">
+            	/pages/ivitemstatus.vm
+            </result>
+    	    <result name="success" type="velocity">
+            	/pages/ivitemstatus.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+	    <action name="ivdoitemlookup2" class="com.auctionminister.action.inventory.ItemLookupAction">
+    	    <result name="input" type="velocity">
+            	/pages/ivadjustqty.vm
+            </result>
+    	    <result name="success" type="velocity">
+            	/pages/ivitemlookup.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+        <action name="ivdoitemlookup3" class="com.auctionminister.action.inventory.ItemLookupAction">
+    	    <result name="input" type="velocity">
+            	/pages/poentry.vm
+            </result>
+    	    <result name="success" type="velocity">
+            	/pages/ivitemlookup.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+        <action name="ivdoitemlookup4" class="com.auctionminister.action.inventory.ItemLookupAction">
+    	    <result name="input" type="velocity">
+            	/pages/saentry.vm
+            </result>
+    	    <result name="success" type="velocity">
+            	/pages/ivitemlookup.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+        <action name="ivclasslookup" class="com.auctionminister.action.inventory.ItemClassLookupAction">
+    	    <result name="success" type="velocity">
+            	/pages/ivclassmaint.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+	    <action name="ivdoeditclass" class="com.auctionminister.action.inventory.EditItemClassAction">
+    	    <result name="input" type="velocity">
+    	        /pages/ivclassmaintadd.vm
+    	    </result>
+    	    <result name="success" type="chain">
+            	ivclasslookup
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+        <action name="ivadditemclass" class="com.auctionminister.action.inventory.ItemClassLoadAction">
+    	    <result name="input" type="velocity">
+            	/pages/ivclassmaint.vm
+            </result>
+    	    <result name="success" type="velocity">
+            	/pages/ivclassmaintadd.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+	    <action name="ivdodeleteclass" class="com.auctionminister.action.inventory.EditItemClassAction">
+    	    <result name="input" type="velocity">
+    	        /pages/ivclassmaint.vm
+    	    </result>
+    	    <result name="success" type="chain">
+            	ivclasslookup.action
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+	    <action name="ivitemview" class="com.auctionminister.action.inventory.ItemLoadAction">
+    	    <result name="success" type="velocity">
+            	/pages/ivitemview.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+	     <action name="ivassembly" class="com.auctionminister.action.inventory.AssemblyEditor">
+    	    <result name="input" type="velocity">
+    	        /pages/ivassembly.vm
+    	    </result>
+    	    <result name="success" type="velocity">
+            	/pages/ivassembly.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+	       <action name="ivmfgplanner" class="com.auctionminister.action.inventory.MfgPlanner">
+    	    <result name="input" type="velocity">
+    	        /pages/ivmfgplanner.vm
+    	    </result>
+    	    <result name="success" type="velocity">
+            	/pages/ivmfgplanner.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+	
+	</package>
+		    
+</struts>

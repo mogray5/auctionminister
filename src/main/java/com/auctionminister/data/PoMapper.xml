@@ -1,0 +1,512 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auctionminister.data">
+
+	<resultMap id="PoBatchResults" type="PoBatchData">
+		<result property="userId" column="USERID" />
+		<result property="docId" column="DOCID" />
+		<result property="batchId" column="BATCHID" />
+		<result property="batchDate" column="BATCHDATE" />
+	</resultMap>
+	<resultMap id="PoHeaderResults" type="PoHeaderData">
+		<result property="batchId" column="BATCHID" />
+		<result property="docId" column="DOCID" />
+		<result property="poNumber" column="PONUMBER" />
+		<result property="vendorId" column="VENDORID" />
+		<result property="vendorName" column="VENDORNAME" />
+		<result property="poDate" column="PODATE" />
+		<result property="saved" column="SAVED" />
+	</resultMap>
+
+	<select id="GetVendorList" parameterType="SearchParams"
+		resultType="VendorData">
+		<![CDATA[ select VENDORID as VendorId,
+             VENDORNAME as VendorName,
+             TAXID as TaxId,
+             ADDRESS1 as Address1,
+             ADDRESS2 as Address2,
+             ADDRESS3 as Address3,
+             CITY as City,
+             STATE as State,
+             ZIP as Zip,
+             COUNTRY as Country,
+             PHONE1 as Phone1,
+             PHONE2 as Phone2,
+             FAX as Fax,
+             STATUS as Status
+             from vn001
+             where USERID=#{userId}
+             ORDER BY VENDORNAME]]>
+	</select>
+	<select id="GetVendorListByName" parameterType="SearchParams"
+		resultType="VendorData">
+		<![CDATA[ select VENDORID as VendorId,
+             VENDORNAME as VendorName,
+             TAXID as TaxId,
+             ADDRESS1 as Address1,
+             ADDRESS2 as Address2,
+             ADDRESS3 as Address3,
+             CITY as City,
+             STATE as State,
+             ZIP as Zip,
+             COUNTRY as Country,
+             PHONE1 as Phone1,
+             PHONE2 as Phone2,
+             FAX as Fax,
+             STATUS as Status
+             from vn001
+             where USERID=#{userId} AND
+             VENDORNAME like #{searchVal}
+             ORDER BY VENDORNAME]]>
+	</select>
+
+	<select id="GetVendorListSmall" parameterType="UserSmallData"
+		resultType="com.auctionminister.data.VendorSmallData">
+		<![CDATA[ select VENDORID as VendorId,
+              VENDORNAME as VendorName
+              from vn001
+              where USERID=#{userId}
+              ORDER BY VENDORNAME]]>
+	</select>
+	<select id="GetVendorById" parameterType="VendorSmallData"
+		resultType="VendorData">
+		<![CDATA[ select VENDORID as VendorId,
+             VENDORNAME as VendorName,
+             TAXID as TaxId,
+             ADDRESS1 as Address1,
+             ADDRESS2 as Address2,
+             ADDRESS3 as Address3,
+             CITY as City,
+             STATE as State,
+             ZIP as Zip,
+             COUNTRY as Country,
+             PHONE1 as Phone1,
+             PHONE2 as Phone2,
+             FAX as Fax,
+             STATUS as Status
+             from vn001
+             where USERID=#{userId} AND
+             VENDORID=#{vendorId}]]>
+	</select>
+	<select id="GetVendorByName" parameterType="VendorSmallData"
+		resultType="VendorData">
+		<![CDATA[ select VENDORID as VendorId,
+             VENDORNAME as VendorName,
+             TAXID as TaxId,
+             ADDRESS1 as Address1,
+             ADDRESS2 as Address2,
+             ADDRESS3 as Address3,
+             CITY as City,
+             STATE as State,
+             ZIP as Zip,
+             COUNTRY as Country,
+             PHONE1 as Phone1,
+             PHONE2 as Phone2,
+             FAX as Fax,
+             STATUS as Status
+             from vn001
+             where USERID=#{userId} AND
+             VENDORNAME=#{vendorName}]]>
+	</select>
+
+	<select id="GetOpenPoBatchList" parameterType="java.lang.Long"
+		resultMap="PoBatchResults">
+		<![CDATA[ SELECT USERID,
+            DOCID,
+            BATCHID,
+            BATCHDATE
+        FROM po100
+        WHERE USERID=#{value} 
+        ORDER BY BATCHDATE]]>
+	</select>
+
+	<select id="GetOpenPoHeaderList" parameterType="PoHeaderData"
+		resultMap="PoHeaderResults">
+		<![CDATA[ SELECT c.BATCHID, 
+            a.DOCID,
+            a.PONUMBER,
+            a.VENDORID,
+            b.VENDORNAME,
+            a.PODATE,
+            a.SAVED
+         FROM po101 a INNER JOIN vn001 b ON
+        a.VENDORID = b.VENDORID INNER JOIN
+        po100 c ON a.DOCID = c.DOCID
+        WHERE c.USERID=#{userId} AND a.DOCID=#{docId} 
+        ORDER BY a.PONUMBER ]]>
+	</select>
+	<select id="GetOpenPoHeaderListByStatus" parameterType="PoHeaderData"
+		resultMap="PoHeaderResults">
+		<![CDATA[ SELECT c.BATCHID,
+            c.USERID, a.DOCID,
+            a.PONUMBER,
+            a.VENDORID,
+            b.VENDORNAME,
+            a.PODATE,
+            a.SAVED
+        FROM po101 a INNER JOIN vn001 b ON
+        a.VENDORID = b.VENDORID INNER JOIN
+        po100 c ON a.DOCID = c.DOCID
+        WHERE c.USERID=#{userId} AND
+        a.SAVED=#{saved}
+        ORDER BY a.PONUMBER ]]>
+	</select>
+	<select id="GetOpenPoLookupByBatch" parameterType="PoLookupParams"
+		resultMap="PoHeaderResults">
+		<![CDATA[ SELECT c.BATCHID,
+            c.USERID, a.DOCID,
+            a.PONUMBER,
+            a.VENDORID,
+            b.VENDORNAME,
+            a.PODATE,
+            a.SAVED
+        FROM po101 a INNER JOIN vn001 b ON
+        a.VENDORID = b.VENDORID INNER JOIN
+        po100 c ON a.DOCID = c.DOCID
+        WHERE c.USERID=#{userId} AND
+        c.BATCHID=#{batchId}
+        ORDER BY a.PONUMBER ]]>
+	</select>
+	<select id="GetOpenPoLookupByDate" parameterType="PoLookupParams"
+		resultMap="PoHeaderResults">
+		<![CDATA[ SELECT c.BATCHID,
+            c.USERID, a.DOCID,
+            a.PONUMBER,
+            a.VENDORID,
+            b.VENDORNAME,
+            a.PODATE,
+            a.SAVED
+        FROM po101 a INNER JOIN vn001 b ON
+        a.VENDORID = b.VENDORID INNER JOIN
+        po100 c ON a.DOCID = c.DOCID
+        WHERE c.USERID=#{userId} AND
+        a.PODATE>=#{startDate} AND 
+        a.PODATE <= #{endDate} ]]>
+	</select>
+	<select id="GetOpenPoLookupByNumber" parameterType="PoLookupParams"
+		resultMap="PoHeaderResults">
+		<![CDATA[ SELECT c.BATCHID,
+            c.USERID, a.DOCID,
+            a.PONUMBER,
+            a.VENDORID,
+            b.VENDORNAME,
+            a.PODATE,
+            a.SAVED as Saved
+        FROM po101 a INNER JOIN vn001 b ON
+        a.VENDORID = b.VENDORID INNER JOIN
+        po100 c ON a.DOCID = c.DOCID
+        WHERE c.USERID=#{userId} AND
+        a.PONUMBER>=#{poNumber}
+        ORDER BY a.PONUMBER ]]>
+	</select>
+	<select id="GetOpenPoLookupByVendorName" parameterType="PoLookupParams"
+		resultMap="PoHeaderResults">
+		<![CDATA[ SELECT c.BATCHID,
+            c.USERID, a.DOCID,
+            a.PONUMBER,
+            a.VENDORID,
+            b.VENDORNAME,
+            a.PODATE,
+            a.SAVED as Saved
+        FROM po101 a INNER JOIN vn001 b ON
+        a.VENDORID = b.VENDORID INNER JOIN
+        po100 c ON a.DOCID = c.DOCID
+        WHERE c.USERID=#{userId} AND
+        b.VENDORNAME LIKE #{vendorName} 
+        ORDER BY b.VENDORNAME, a.PONUMBER ]]>
+	</select>
+
+	<select id="GetClosedPoLookupByBatch" parameterType="PoLookupParams"
+		resultMap="PoHeaderResults">
+		<![CDATA[ SELECT c.BATCHID,
+            c.USERID, a.DOCID,
+            a.PONUMBER,
+            a.VENDORID,
+            b.VENDORNAME,
+            a.PODATE,
+            1 as SAVED
+        FROM po301 a INNER JOIN vn001 b ON
+        a.VENDORID = b.VENDORID INNER JOIN
+        po300 c ON a.DOCID = c.DOCID
+        WHERE c.USERID=#{userId} AND
+        c.BATCHID=#{batchId} 
+        ORDER BY c.BATCHID, a.PONUMBER ]]></select>
+	<select id="GetClosedPoLookupByDate" parameterType="PoLookupParams"
+		resultMap="PoHeaderResults">
+		<![CDATA[ SELECT c.BATCHID,
+            c.USERID, a.DOCID,
+            a.PONUMBER,
+            a.VENDORID,
+            b.VENDORNAME,
+            a.PODATE,
+            1 as SAVED
+        FROM po301 a INNER JOIN vn001 b ON
+        a.VENDORID = b.VENDORID INNER JOIN
+        po300 c ON a.DOCID = c.DOCID
+        WHERE c.USERID=#{userId} AND
+        a.PODATE>=#{startDate} AND 
+        a.PODATE <= #{endDate}
+        ORDER BY a.PODATE, a.PONUMBER ]]></select>
+	<select id="GetClosedPoLookupByNumber" parameterType="PoLookupParams"
+		resultMap="PoHeaderResults">
+		<![CDATA[ SELECT c.BATCHID,
+            c.USERID, a.DOCID,
+            a.PONUMBER,
+            a.VENDORID,
+            b.VENDORNAME,
+            a.PODATE,
+            1 as SAVED
+        FROM po301 a INNER JOIN vn001 b ON
+        a.VENDORID = b.VENDORID INNER JOIN
+        po300 c ON a.DOCID = c.DOCID
+        WHERE c.USERID=#{userId} AND
+        a.PONUMBER>=#{poNumber} 
+        ORDER BY a.PONUMBER ]]></select>
+	<select id="GetClosedPoLookupByVendorName" parameterType="PoLookupParams"
+		resultMap="PoHeaderResults">
+		<![CDATA[ SELECT c.BATCHID,
+            c.USERID, a.DOCID,
+            a.PONUMBER,
+            a.VENDORID,
+            b.VENDORNAME,
+            a.PODATE,
+            1 as Saved
+        FROM po301 a INNER JOIN vn001 b ON
+        a.VENDORID = b.VENDORID INNER JOIN
+        po300 c ON a.DOCID = c.DOCID
+        WHERE c.USERID=#{userId} AND
+        b.VENDORNAME LIKE #{vendorName}
+        ORDER BY b.VENDORNAME, a.PONUMBER ]]>
+	</select>
+	<select id="GetOpenPoHeader" parameterType="PoHeaderData"
+		resultMap="PoHeaderResults">
+		<![CDATA[ SELECT c.BATCHID, 
+            a.DOCID,
+            a.PONUMBER,
+            a.VENDORID,
+            b.VENDORNAME,
+            a.PODATE,
+            a.SAVED
+        FROM po101 a INNER JOIN vn001 b ON
+        a.VENDORID = b.VENDORID INNER JOIN
+        po100 c on a.DOCID = c.DOCID
+        WHERE a.DOCID=#{docId} AND
+        a.PONUMBER=#{poNumber}]]>
+	</select>
+	<select id="GetOpenPoLineList" parameterType="PoLineData"
+		resultType="PoLineData">
+		<![CDATA[ SELECT a.PONUMBER as PoNumber,
+            a.ITEMID as ItemId,
+            b.ITEMDESC as ItemDesc,
+            a.PURCHPRICE as PurchPrice,
+            a.QTYPURCH as QtyPurch,
+            a.EVETXNID as EveTxnId
+        FROM po102 a INNER JOIN iv001 b ON
+        a.ITEMID = b.ITEMID
+        WHERE b.USERID=#{userId} AND a.PONUMBER=#{poNumber} 
+        ORDER BY a.ITEMID]]>
+	</select>
+	<select id="GetOpenPoLine" parameterType="PoLineData"
+		resultType="PoLineData">
+		<![CDATA[ SELECT a.PONUMBER as PoNumber,
+            a.ITEMID as ItemId,
+            b.ITEMDESC as ItemDesc,
+            a.PURCHPRICE as PurchPrice,
+            a.QTYPURCH as QtyPurch,
+            a.EVETXNID as EveTxnId
+        FROM po102 a INNER JOIN iv001 b ON
+        a.ITEMID = b.ITEMID 
+        WHERE b.USERID=#{userId} AND a.PONUMBER=#{poNumber} AND
+        a.ITEMID = #{itemId}
+        ORDER BY a.ITEMID ]]>
+	</select>
+	<insert id="AddVendor" parameterType="VendorData">
+		<![CDATA[ insert into vn001 (USERID,
+            VENDORNAME,
+             TAXID,
+             ADDRESS1,
+             ADDRESS2,
+             ADDRESS3,
+             CITY,
+             STATE,
+             ZIP,
+             COUNTRY,
+             PHONE1,
+             PHONE2,
+             FAX,
+             STATUS)
+             VALUES(#{userId},
+             #{vendorName}, #{taxId},
+             #{address1}, #{address2},
+             #{address3}, #{city},
+             #{state}, #{zip},
+             #{country}, #{phone1},
+             #{phone2}, #{fax},
+             #{status}) ]]>
+	</insert>
+	<update id="EditVendor" parameterType="VendorData">
+		<![CDATA[ update vn001 
+            set 
+            VENDORNAME=#{vendorName},
+            TAXID=#{taxId},
+            ADDRESS1=#{address1},
+            ADDRESS2=#{address2},
+            ADDRESS3=#{address3},
+            CITY=#{city},
+            STATE=#{state},
+            ZIP=#{zip},
+            COUNTRY=#{country},
+            PHONE1=#{phone1},
+            PHONE2=#{phone2},
+            FAX=#{fax},
+            STATUS=#{status}
+            WHERE USERID=#{userId} AND
+            VENDORID=#{vendorId} ]]></update>
+	<insert id="AddOpenPoBatch" parameterType="PoBatchData">
+		<![CDATA[ insert into po100(USERID,
+        BATCHID, BATCHDATE)
+        VALUES(#{userId}, #{batchId}, #{batchDate})]]>
+	</insert>
+	<select id="GetLastOpenPoBatch" parameterType="UserSmallData"
+		resultType="java.lang.Long">
+		<![CDATA[ SELECT max(DOCID) as DocId
+        FROM po100
+        WHERE USERID=#{userId}
+        ]]>
+	</select>
+	<select id="GetLastOpenPoNumber" parameterType="UserSmallData"
+		resultType="java.lang.Long">
+		<![CDATA[ SELECT max(PONUMBER) as PoNumber
+        FROM po101
+        WHERE DOCID=#{value}
+        ]]>
+	</select>
+	<insert id="AddOpenPoHeader" parameterType="PoHeaderData">
+		<![CDATA[ insert into po101
+            (DOCID, VENDORID,
+            PODATE, SAVED)
+        VALUES(#{docId}, #{vendorId}, #{poDate}, 0)]]>
+	</insert>
+	<insert id="AddOpenPoLine" parameterType="PoLineData">
+		<![CDATA[ insert into po102
+            (PONUMBER, ITEMID,
+            PURCHPRICE, QTYPURCH, EVETXNID)
+        VALUES(#{poNumber}, #{itemId}, #{purchPrice}, #{qtyPurch}, #{eveTxnId})]]>
+	</insert>
+	<update id="EditOpenPoHeader" parameterType="PoHeaderData">
+		<![CDATA[ update po101
+            set VENDORID=#{vendorId},
+            PODATE=#{poDate},
+            SAVED=#{saved}
+            WHERE DOCID=#{docId} AND PONUMBER=#{poNumber}
+            ]]>
+	</update>
+	<update id="EditOpenPoLine" parameterType="PoLineData">
+		<![CDATA[ update po102
+            SET PURCHPRICE = #{purchPrice},
+            QTYPURCH = #{qtyPurch}
+           WHERE PONUMBER=#{poNumber} AND ITEMID=#{itemId}]]>
+	</update>
+	<delete id="DeleteOpenPoLine" parameterType="PoLineData">
+		<![CDATA[ delete from po102
+           WHERE PONUMBER=#{poNumber} AND ITEMID=#{itemId}]]>
+	</delete>
+	<delete id="DeleteOpenPoLines" parameterType="java.lang.Long">
+		<![CDATA[ delete from po102
+           WHERE PONUMBER=#{value}]]>
+	</delete>
+	<select id="DeleteOpenPoHeader" parameterType="PoHeaderData">
+		<![CDATA[ delete from po101
+            WHERE DOCID=#{docId} AND PONUMBER=#{poNumber}
+        ]]></select>
+	<delete id="DeleteOpenPoBatchByDocId" parameterType="PoHeaderData">
+		<![CDATA[ delete from po100
+            WHERE USERID=#{userId} AND DOCID=#{docId} 
+        ]]>
+	</delete>
+	<select id="GetOpenPoBatch" parameterType="PoBatchData"
+		resultType="PoBatchData">
+		<![CDATA[ SELECT USERID,
+            DOCID,
+            BATCHID,
+            BATCHDATE
+        FROM po100
+        WHERE USERID=#{userId} AND BATCHID=#{batchId}
+        ORDER BY BATCHID ]]></select>
+	<insert id="MovePoHeaderToHistory" parameterType="PoHeaderData">
+		<![CDATA[
+            INSERT INTO po301 (DOCID, PONUMBER, VENDORID, PODATE)
+            SELECT DOCID, PONUMBER, VENDORID, PODATE
+            FROM po101
+            WHERE DOCID=#{docId} AND PONUMBER=#{poNumber}
+            ]]>
+	</insert>
+
+	<insert id="MovePoLinesToHistory" parameterType="PoHeaderData">
+		<![CDATA[
+            INSERT INTO po302 (PONUMBER, ITEMID, PURCHPRICE, QTYPURCH, EVETXNID)
+            SELECT PONUMBER, ITEMID, PURCHPRICE, QTYPURCH, EVETXNID
+            FROM po102
+            WHERE PONUMBER=#{poNumber}
+            ]]>
+	</insert>
+	<insert id="MovePoBatchToHistory" parameterType="PoHeaderData">
+		<![CDATA[
+            INSERT INTO po300 (USERID, DOCID, BATCHID, BATCHDATE)
+            SELECT USERID, DOCID, BATCHID, BATCHDATE
+            FROM po100
+            WHERE USERID=#{userId} AND DOCID=#{docId}
+            ]]>
+	</insert>
+	<select id="GetClosedPoLineList" parameterType="PoHeaderData"
+		resultType="PoLineData">
+		<![CDATA[ 
+			SELECT a.PONUMBER as PoNumber,
+	            a.ITEMID as ItemId,
+	            b.ITEMDESC as ItemDesc,
+	            a.PURCHPRICE as PurchPrice,
+	            a.QTYPURCH as QtyPurch,
+	            a.EVETXNID as EveTxnId
+	        FROM po302 a INNER JOIN iv001 b ON
+	        a.ITEMID = b.ITEMID
+	        WHERE b.USERID=#{userId} AND a.PONUMBER=#{poNumber}
+	        ORDER BY a.ITEMID 
+		]]></select>
+	<select id="GetClosedPoLinesByVendor" parameterType="VendorData"
+		resultType="PoLineData">
+		<![CDATA[ 
+			SELECT a.PONUMBER as PoNumber,
+	            a.ITEMID as ItemId,
+	            b.ITEMDESC as ItemDesc,
+	            a.PURCHPRICE as PurchPrice,
+	            a.QTYPURCH as QtyPurch,
+	            a.EVETXNID as EveTxnId
+	        FROM po302 a INNER JOIN iv001 b ON
+	        a.ITEMID = b.ITEMID INNER JOIN po301 c ON
+	        a.PONUMBER = c.PONUMBER INNER JOIN vn001 d ON
+	        c.VENDORID = d.VENDORID
+	        WHERE b.USERID=#{userId} AND d.VENDORID = #{vendorId}
+	        ORDER BY a.ITEMID 
+		]]>
+	</select>
+	<select id="GetClosedPoLine" parameterType="PoLookupParams"
+		resultType="PoLineData">
+		<![CDATA[ SELECT a.PONUMBER as PoNumber,
+            a.ITEMID as ItemId,
+            b.ITEMDESC as ItemDesc,
+            a.PURCHPRICE as PurchPrice,
+            a.QTYPURCH as QtyPurch,
+            a.EVETXNID as EveTxnId
+        FROM po302 a INNER JOIN iv001 b ON
+        a.ITEMID = b.ITEMID 
+        WHERE b.USERID=#{userId} AND a.PONUMBER=#{poNumber} AND
+        a.ITEMID = #{itemId}]]>
+	</select>
+	<delete id="DeleteClosedPoLine" parameterType="PoLineData">
+		<![CDATA[ delete from po302
+           WHERE PONUMBER=#{poNumber} AND ITEMID=#{itemId}]]>
+	</delete>
+</mapper>

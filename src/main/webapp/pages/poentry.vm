@@ -1,0 +1,159 @@
+#parse("/pages/top.vm")
+#parse("/pages/workmenu.vm")
+#hmenu($itemlist '100%' "right" "workmenu" 2)
+#parse("/pages/pomenu.vm")
+#hmenu($itemlist '100%' "right" "submenu" 99)
+
+#if ($isSecure=="S")
+	<br><br>
+	#mainheader("Purchase Order Entry")
+	
+	#if($PoHeader.getPoNumber())
+
+		#set($maint1="#menulink('javascript:document.frmSavePo.submit();' 'Save' 'menulink')")
+		#set($maint2="#menulink('javascript:document.frmClearPo.submit();' 'Clear' 'menulink')")
+		#set($itemlist=[$maint1, $maint2])
+		#hmenu($itemlist '100px' "center" "submenu" 99)
+
+		<br><br>
+
+		#sectionheader("Purchase Order: $!PoHeader.getPoNumber()")
+
+		<form name="frmSavePo" method="POST" action="podosaveopenpo.action">
+			#formstart("500px" "center")
+
+				<input type="hidden" name="PoNumber" value="$!PoHeader.getPoNumber()"/>	
+				<input type="hidden" name="DocId" value="$!PoHeader.getDocId()"/>	
+
+				
+				<table width="500px">
+				<tr>
+					<td>
+						#dataout("PO Number" "$!PoHeader.getPoNumber()")
+					</td><td>
+						#dataout("Batch Id" "$!PoHeader.getBatchId()")
+					</td>
+				</tr><tr>
+					<td>
+						#textinput("PO Date" "PoDate" "$!PoHeader.getPoDateString()" 10) 
+					</td><td>
+				
+					#startddinput("Vendor" "VendorId")
+						#foreach($vendor in $VendorList)
+							#if($PoHeader.getVendorId()==$vendor.getVendorId())
+								#ddoption($!vendor.getVendorName() $!vendor.getVendorId() ".")	
+							#else
+								#ddoption($!vendor.getVendorName() $!vendor.getVendorId() "")	
+							#end
+						#end
+					#endddinput()
+				</td></tr>
+				</table>
+			#formend()
+		</form>
+
+		<form name="frmClearPo" method=POST action="pododeleteopenpo.action">
+			<input type="hidden" name="PoNumber" value="$!PoHeader.getPoNumber()"/>	
+			<input type="hidden" name="DocId" value="$!PoHeader.getDocId()"/>
+			<input type="hidden" name="BatchId" value="$!PoHeader.getBatchId()"/>		
+		</form>
+		
+		<br>
+	
+		#sectionheader("Add New Line Items")
+	
+		#set($maint1="#menulink('javascript:document.frmAddLine.submit();' 'Add Line' 'menulink')")
+		#set($itemlist=[$maint1])
+		#hmenu($itemlist '70px' "center" "submenu" 99)
+	
+		<br>
+
+		#itemsearchform("ivdoitemlookup3.action" "poentryitemselect.action" "Y")
+
+		<form name="frmAddLine" method="POST" action="podoopenpoline.action">
+			<input type="hidden" name="PoNumber" value="$!PoHeader.getPoNumber()"/>	
+			#formstart("500px" "center")
+				
+				<table width="550px" cellpadding="3">
+				<tr>
+					<td>
+						#textinput("Item Id" "ItemId" "$!ItemId" 15) 
+					</td><td>
+						#textinput("Price" "PurchPrice" "" 10)
+					</td><td>
+						#textinput("Qty" "QtyPurch" "" 10)  
+					</td>
+				</tr>
+				</table>
+
+			#formend()
+		</form>
+
+	<br>
+
+	#sectionheader("Existing Line Items")
+
+	#set($index = 0)
+	<div align="center">
+	<table border=1 width="70%" cellpadding="5">
+		<tr class="rowstyle1">
+		<td>Item Id</td>
+		<td>Item Desc</td>
+		<td>Purchase Price</td>
+		<td>Qty Purchased</td>
+		<td></td>
+		</tr>
+		#foreach ($line in $PoLines)
+			
+			#if($index==0)
+				#set($style="rowstyle2")
+				#set($index=1)
+			#else
+				#set($style="rowstyle3")
+				#set($index=0)
+			#end
+	
+			<tr class="$style">
+			<td><a href="ivitemview.action?itemId=$line.getItemId()">$line.getItemId()</a></td>
+			<td>$line.getItemDesc()</td>
+			<td>$line.getPurchPrice()</td>
+			<td>$line.getQtyPurch()</td>
+			<td class="center">#baselink("pododeleteopenline.action?PoNumber=$!line.getPoNumber()&ItemId=$!line.getItemId()" "Delete")</td>
+			</tr>
+		#end
+	</table>
+	</div>
+
+	#else
+	
+		#set($maint1="#menulink('javascript:document.frmAddPo.submit();' 'Add New PO' 'menulink')")
+		#set($itemlist=[$maint1])
+		#hmenu($itemlist '100px' "center" "submenu" 99)
+
+		<br><br>
+
+		<form name="frmAddPo" method="POST" action="podoaddpo.action">
+			#formstart("250px" "center")
+			#textinput("Enter Batch ID" "BatchId" "$!PoHeader.getBatchId()" 15) 
+			
+			#startddinput("Vendor" "VendorId")
+				#foreach($vendor in $VendorList)
+					#if($PoHeader.getVendorId()==$vendor.getVendorId())
+						#ddoption($!vendor.getVendorName() $!vendor.getVendorId() ".")	
+					#else
+						#ddoption($!vendor.getVendorName() $!vendor.getVendorId() "")	
+					#end
+				#end
+			#endddinput()
+			
+			#formend()
+		</form>
+
+	#end
+
+
+#else
+	#denied()
+#end
+
+#parse("/pages/bottom.vm")

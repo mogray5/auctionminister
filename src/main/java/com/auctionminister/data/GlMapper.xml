@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auctionminister.data">
+	<update id="DebitAccount" parameterType="AccountParams">
+		update gl003
+		set DEBITBALANCE=DEBITBALANCE + #{adjustVal}
+		where USERID=#{userId} and ACTINDEX=#{accountIndex} AND YR=#{year}
+	</update>
+
+	<update id="CreditAccount" parameterType="AccountParams">
+        <![CDATA[ update gl003 
+            set CREDITBALANCE=CREDITBALANCE + #{adjustVal}
+           where USERID=#{userId} and ACTINDEX=#{accountIndex}
+           AND YR=#{year} ]]>
+	</update>
+	<update id="DebitMonthlyAccount" parameterType="AccountParams">
+        <![CDATA[ update gl004 
+            set DEBITBALANCE=DEBITBALANCE + #{adjustVal}
+           where USERID=#{userId} and ACTINDEX=#{accountIndex} AND
+           MTH=#{month} AND YR=#{year} ]]>
+	</update>
+	<update id="CreditMonthlyAccount" parameterType="AccountParams">
+        <![CDATA[ update gl004 
+            set CREDITBALANCE=CREDITBALANCE + #{adjustVal}
+           where USERID=#{userId} and ACTINDEX=#{accountIndex} AND
+           MTH=#{month} AND YR=#{year} ]]>
+	</update>
+	<select id="CheckMonthlyTable" parameterType="AccountParams" resultType="java.lang.Integer">
+        <![CDATA[ select count(*) from gl004
+           where USERID=#{userId} AND
+           MTH=#{month} AND YR=#{year} ]]>
+	</select>
+	<update id="AddMonthlyLines" parameterType="AccountParams">
+        <![CDATA[ insert into gl004 (USERID, ACTINDEX, MTH, YR, 
+        CREDITBALANCE, DEBITBALANCE)
+        SELECT #{userId}, ACTINDEX, #{month}, #{year}, 0, 0
+        FROM gl001 ]]>
+	</update>
+
+	<update id="AddYearlyLines" parameterType="AccountParams">
+        <![CDATA[ insert into gl003 (USERID, ACTINDEX, YR, 
+        CREDITBALANCE, DEBITBALANCE)
+        SELECT #{userId}, ACTINDEX, #{year}, 0, 0
+        FROM gl001 ]]>
+	</update>
+
+	<select id="CheckYearlyTable" parameterType="AccountParams" resultType="java.lang.Integer">
+        <![CDATA[ select count(*) from gl003
+           where USERID=#{userId} AND
+           YR=#{year} ]]>
+	</select>
+
+	<update id="RecordCreditTransaction" parameterType="AccountParams">
+        <![CDATA[ INSERT INTO gl305 (USERID, ACTINDEX, 
+            TRXDATE, TRXREF, CREDITBALANCE, DEBITBALANCE)
+            VALUES(#{userId}, #{accountIndex}, #{trxDate},
+            #{trxRef}, #{adjustVal}, 0) ]]>
+	</update>
+
+	<update id="RecordDebitTransaction" parameterType="AccountParams">
+        <![CDATA[ 
+        	INSERT INTO gl305 (USERID, ACTINDEX, 
+            TRXDATE, TRXREF, CREDITBALANCE, DEBITBALANCE)
+            VALUES(#{userId}, #{accountIndex}, #{trxDate},
+            #{trxRef}, 0, #{adjustVal}) 
+            ]]>
+	</update>
+
+	<select id="GetGlAccountTypes" resultType="GlAccountTypes">
+		<![CDATA[
+			SELECT AcctType, AcctTypeDesc
+			FROM gl002
+			ORDER BY AcctTypeDesc;
+		]]>
+	</select>
+
+	<select id="GetNonMerchChargeAccounts" resultType="AccountData">
+		<![CDATA[
+			SELECT gl.actindex as ACCOUNTINDEX, 
+			gl.accountdesc as ACCOUNTDESCRIPTION
+  			FROM gl001 gl INNER JOIN gl002 ty
+  				on gl.accttype = ty.accttype
+  			WHERE ty.accttypedesc = 'Non-Merch Charges'; 
+		]]>
+	</select>
+	
+	<select id="GetIncomeAccounts" resultType="AccountData">
+		<![CDATA[
+			SELECT gl.actindex as ACCOUNTINDEX, 
+			gl.accountdesc as ACCOUNTDESCRIPTION
+  			FROM gl001 gl INNER JOIN gl002 ty
+  				on gl.accttype = ty.accttype
+  			WHERE ty.accttypedesc = 'Cost of Goods Sold'; 
+		]]>
+	</select>
+
+</mapper>

@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+
+	<package name="purchases" extends="default">
+		    <!-- PO ACTIONS -->
+	    <action name="purchmain" class="com.auctionminister.action.system.SecureAction">
+    	    <result name="success" type="velocity">
+            	/pages/ampo.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+	    <action name="povendormaint" class="com.auctionminister.action.purchase.VendorLookupAction">
+    	    <result name="success" type="velocity">
+            	/pages/povendormaint.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+	    <action name="poaddvendor" class="com.auctionminister.action.purchase.VendorLoadAction">
+    	    <result name="input" type="velocity">
+            	/pages/povendormaint.vm
+            </result>
+    	    <result name="success" type="velocity">
+            	poeditvendor.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+	    <action name="podoaddvendor" class="com.auctionminister.action.purchase.EditVendorAction">
+    	    <result name="input" type="velocity">
+            	/pages/poeditvendor.vm
+            </result>
+    	    <result name="success" type="chain">
+            	povendormaint
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+	    <action name="povendorcontactinfo" class="com.auctionminister.action.purchase.VendorLoadAction">
+    	    <result name="input" type="velocity">
+            	/pages/povendormaint.vm
+            </result>
+    	    <result name="success" type="velocity">
+            	/pages/povendorcontactinfo.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+	    <action name="poentry" class="com.auctionminister.action.purchase.PoLoadUnsavedAction">
+    	    <result name="input" type="velocity">
+            	/pages/poentry.vm
+            </result>
+    	    <result name="success" type="velocity">
+            	/pages/poentry.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+	    <action name="poentryitemselect" class="com.auctionminister.action.purchase.PoLoadUnsavedAction">
+    	    <result name="input" type="velocity">
+            	/pages/itemlookup.vm
+            </result>
+    	    <result name="success" type="velocity">
+            	/pages/poentry.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+	    <action name="podoaddpo" class="com.auctionminister.action.purchase.AddOpenPoAction">
+    	    <result name="input" type="velocity">
+            	/pages/poentry.vm
+            </result>
+    	    <result name="success" type="chain">
+            	poentry
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+        <action name="pododeleteopenpo" class="com.auctionminister.action.purchase.DeleteOpenPoAction">
+    	    <result name="input" type="velocity">
+            	/pages/poentry.vm
+            </result>
+    	    <result name="success" type="chain">
+            	poentry
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+        <action name="podoopenpoline" class="com.auctionminister.action.purchase.AddOpenPoLineAction">
+    	    <result name="input" type="velocity">
+            	/pages/poentry.vm
+            </result>
+    	    <result name="success" type="chain">
+            	poentry
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+       <action name="pododeleteopenline" class="com.auctionminister.action.purchase.DeleteOpenPoLineAction">
+    	    <result name="input" type="velocity">
+            	/pages/poentry.vm
+            </result>
+    	    <result name="success" type="chain">
+            	poentry
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+       <action name="podosaveopenpo" class="com.auctionminister.action.purchase.SaveOpenPoAction">
+    	    <result name="input" type="velocity">
+            	/pages/poentry.vm
+            </result>
+    	    <result name="success" type="chain">
+            	poentry
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+	    <action name="poposting" class="com.auctionminister.action.purchase.PoBatchLookupAction">
+    	    <result name="success" type="velocity">
+            	/pages/poposting.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+	    <action name="polookup" class="com.auctionminister.action.purchase.PoLookupAction">
+    	    <result name="input" type="velocity">
+            	/pages/polookup.vm
+            </result>
+    	    <result name="success" type="velocity">
+            	/pages/polookup.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+        <action name="podoseteditopenpo" class="com.auctionminister.action.purchase.EditOpenPoAction">
+    	    <result name="input" type="velocity">
+            	/pages/polookup.vm
+            </result>
+    	    <result name="success" type="chain">
+            	poentry
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+        <action name="pododeletebatch" class="com.auctionminister.action.purchase.DeletePoBatchAction">
+    	    <result name="success" type="chain">
+            	poposting
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+	    <action name="poview" class="com.auctionminister.action.purchase.PoLoadAction">
+    	    <result name="success" type="velocity">
+            	/pages/poview.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+        <action name="podopostpobatches" class="com.auctionminister.action.purchase.PostPoBatchAction">
+    	    <result name="input" type="velocity">
+            	/pages/poposting.vm
+            </result>
+    	    <result name="success" type="velocity">
+            	/pages/popostingresults.vm
+            </result>
+           <interceptor-ref name="recordCheckStack"/>
+	    </action>
+	    <action name="poviewclosed" class="com.auctionminister.action.purchase.PoLoadClosedAction">
+    	    <result name="success" type="velocity">
+            	/pages/poviewclosed.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+        <action name="podovendorlookup" class="com.auctionminister.action.purchase.VendorLookupAction">
+    	    <result name="input" type="velocity">
+            	/pages/poreturns.vm
+            </result>
+    	    <result name="success" type="velocity">
+            	/pages/povendorselect.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+        <action name="podoporeturn" class="com.auctionminister.action.purchase.PoReturnAction">
+    	    <result name="input" type="velocity">
+            	/pages/poreturns.vm
+            </result>
+    	    <result name="success" type="chain">
+            	poreturns
+            </result>
+           <interceptor-ref name="recordCheckStack"/>
+	    </action> 
+	   <action name="poreturns" class="com.auctionminister.action.purchase.PoLoadPurchaseItemsAction">
+    	    <result name="input" type="velocity">
+            	/pages/povendorselect.vm
+            </result>
+    	    <result name="success" type="velocity">
+            	/pages/poreturns.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action> 
+	    <action name="pocostsentry" class="com.auctionminister.action.system.SecureAction">
+    	    <result name="success" type="velocity">
+            	/pages/poothercosts.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+	    <action name="podocostsentry" class="com.auctionminister.action.purchase.PoOtherChargesAction">
+    	    <result name="input" type="velocity">
+            	/pages/poothercosts.vm
+            </result>
+            <result name="success" type="velocity">
+            	/pages/poapplyresults.vm
+            </result>
+            
+            <interceptor-ref name="recordCheckStack"/>
+	    </action>
+	</package>
+		    
+</struts>

@@ -1,0 +1,115 @@
+#parse("/pages/top.vm")
+#parse("/pages/workmenu.vm")
+#hmenu($itemlist '100%' "right" "workmenu" 1)
+#parse("/pages/inventorymenu.vm")
+#hmenu($itemlist '100%' "right" "submenu" 2)
+
+#if ($isSecure=="S")
+	<br><br>
+	
+	#mainheader("Stock Status")
+	
+	<table width="fullwidth">
+	<tr>
+	<td>
+	
+	#itemsearchform("ivdoitemlookup.action" "NA" "Y")
+
+	#if($ItemList.size()>100)
+		#if(!$ItemList.isFirstPage())
+		     	<a href="ivdoitemlookup.action?PrevPage=true">Previous Page</a>
+		#else
+		     	Previous Page
+		#end
+				|
+		#if(!$ItemList.isLastPage())
+		      	<a href="ivdoitemlookup.action?NextPage=true">Next Page</a>
+		#else
+		      	Next Page
+		#end
+	#end
+	#sectionheader("Item List")
+	
+	
+	#set($maint1="#menulink('ivedititem.action' 'Add New' 'menulink')")
+	#set($itemlist=[$maint1])
+	#hmenu($itemlist '70px' "center" "submenu" 99)
+	
+	<br>
+		
+	#set($index = 0)
+	<div align="center">
+	<table id="dataTable" width="90%" class="stripe hover order-column row-border">
+		<thead>
+		<tr class="rowstyle1">
+		<th>Item Id</th>
+		<th>Description</th>
+		<th>Qty On Hand</th>
+		<th>Sales Returns</th>
+		<th>Qty Sold</th>
+		<th>Qty Last Ordered</th>
+		<th>Last Order Vendor</th>
+		<th>Last Order Date</th>
+		<th>Current Cost</th>
+		<th>Build Cost</th>
+		<th>List Price</th>
+		<th>Mark Up</th>
+		<th>Profit (Mil)</th>
+		<th>Item Class</th>
+		<th>Is Assembly</th>
+		<th></th>
+		<th></th>
+		</tr>
+        </thead>
+		<tbody>
+		#foreach ($line in $ItemList)
+
+			
+##			#if($index==0)
+##				#set($style="rowstyle2")
+##				#set($index=1)
+##			#else
+##				#set($style="rowstyle3")
+##				#set($index=0)
+##			#end
+			
+			<tr class="$style">
+			<td>#baselink("ivitemview.action?itemId=$!line.getItemId()" $!line.getItemId())</td>
+			<td>$!line.getItemDesc()</td>
+			<td>$!line.getQtyOnHandAsString()</td>
+			<td>$!line.getQtyReturned()</td>
+			<td>$!line.getQtySoldAsString()</td>
+			<td>$!line.getQtyLastOrderAsString()</td>
+			<td>$!line.getLastOrderVendorName()</td>
+			<td>$!line.getLastOrderDateString()</td>
+			<td>$!line.getCurrentCostAsString()</td>
+			<td>$!line.getBuildCostAsString()</td>
+			<td>$!line.getListPriceAsString()</td>
+			<td>$!line.getMarkup()</td>
+			<td>$!line.getProfit()</td>
+			<td>$!line.getItemClassName()</td>
+			<td>#if($!line.getIsAssembly()==1)Yes
+				#else
+					No
+    			#end</td>
+			<td class="center">#baselink("ivedititem.action?itemId=$!line.getItemId()" "Edit")</td>
+			<td class="center">#baselink("#" "Delete")</td>
+			</tr>
+		#end
+		 </tbody>
+	</table>
+	</div>
+	
+	
+	</td>
+	</tr>
+	</table>
+
+#else
+	#denied()
+#end
+
+
+
+
+#parse("/pages/bottom.vm")

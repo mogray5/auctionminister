@@ -1,0 +1,18 @@
+Packages:
+
+postgresql
+libpostgresql-jdbc-java
+
+Database setup:
+
+Create a postgres database
+Change db/environments/development.properties to match your postgres setup.
+
+run: mkddir db/drivers
+run: cd db/drivers
+run: ln -s /usr/share/java/postgresql-jdbc4.jar
+
+Install Mibatis Migrations (http://www.mybatis.org/migrations/)
+
+run:  migrate up
+

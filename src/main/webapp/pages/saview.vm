@@ -1,0 +1,56 @@
+#parse("/pages/top.vm")
+#parse("/pages/workmenu.vm")
+#hmenu($itemlist '100%' "right" "workmenu" 3)
+#parse("/pages/samenu.vm")
+#hmenu($itemlist '100%' "right" "submenu" 99)
+
+#if ($isSecure=="S")
+	<br><br>
+	#mainheader("PO View")
+	<br>
+	#sectionheader("Sales Order: $!SoHeader.getSoNumber()")
+
+		#formstart("300px" "center")
+			#dataout("Sales Number" "$!SoHeader.getSoNumber()")
+			#dataout("Batch Id" "$!SoHeader.getBatchId()")
+			#dataout("Sale Date" "$!soHeader.getSoDateString()") 
+			#dataout("Customer" "$!SoHeader.getCustName()")
+			#dataout("Paypal Fee" "$!SoHeader.getPaypalFee()")
+		#formend()
+	
+	<br>
+	
+	#set($index = 0)
+	<div align="center">
+	<table border=1 width="70%" cellpadding="5">
+		<tr class="rowstyle1">
+		<td>Item Id</td>
+		<td>Item Desc</td>
+		<td>Sale Price</td>
+		<td>Qty Sold</td>
+		</tr>
+		#foreach ($line in $SoLines)
+			
+			#if($index==0)
+				#set($style="rowstyle2")
+				#set($index=1)
+			#else
+				#set($style="rowstyle3")
+				#set($index=0)
+			#end
+	
+			<tr class="$style">
+			<td>#baselink("ivitemview.action?itemId=$line.getItemId()" "$line.getItemId()")</td>
+			<td>$line.getItemDesc()</td>
+			<td>$line.getSalePrice()</td>
+			<td>$line.getQtySold()</td>
+			</tr>
+		#end
+	</table>
+	</div>
+	
+#else
+	#denied()
+#end
+
+#parse("/pages/bottom.vm")

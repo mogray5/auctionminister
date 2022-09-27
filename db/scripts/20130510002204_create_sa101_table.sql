@@ -1,0 +1,29 @@
+--// create sa101 table
+-- Migration SQL that makes the change goes here.
+
+CREATE SEQUENCE sa101_seq
+   INCREMENT 1
+   START 1;
+ALTER TABLE sa101_seq OWNER TO auctionminister;
+
+CREATE TABLE sa101 
+(
+  DOCID NUMERIC(20) NOT NULL DEFAULT 0,
+  SONUMBER NUMERIC(20) NOT NULL DEFAULT nextval('sa101_seq'::regclass),
+  CUSTOMERID INTEGER NOT NULL DEFAULT 0,
+  SAVED SMALLINT NOT NULL DEFAULT 0,
+  PAYPALFEE DECIMAL NOT NULL DEFAULT 0.00,
+  SODATE date NOT NULL,
+  CONSTRAINT PK_SA101 PRIMARY KEY (SONUMBER) USING INDEX TABLESPACE pg_default
+) 
+WITH (
+  OIDS = FALSE
+)
+;
+ALTER TABLE sa101 OWNER TO auctionminister;
+
+--//@UNDO
+-- SQL to undo the change goes here.
+
+DROP TABLE sa101;
+DROP SEQUENCE sa101_seq;

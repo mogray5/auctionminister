@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+
+	<package name="sales" extends="default">
+	
+		   <!-- SALES -->
+	   <action name="salesmain" class="com.auctionminister.action.system.SecureAction">
+    	    <result name="success" type="velocity">
+            	/pages/amsales.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+	   <action name="sacustomerlookup" class="com.auctionminister.action.sales.SaCustomerLookupAction">
+    	    <result name="success" type="velocity">
+            	/pages/sacustomerlookup.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+	   <action name="sadoeditcustomer" class="com.auctionminister.action.sales.SaEditCustomerAction">
+    	    <result name="input" type="velocity">
+            	/pages/saeditcustomer.vm
+            </result>
+    	    <result name="success" type="chain">
+            	sacustomerlookup
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+	    <action name="saeditcustomer" class="com.auctionminister.action.sales.SaCustomerLoadAction">
+    	    <result name="success" type="velocity">
+            	/pages/saeditcustomer.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+       <action name="sadosaveopenso" class="com.auctionminister.action.sales.SaveOpenSoAction">
+    	    <result name="input" type="velocity">
+            	/pages/saentry.vm
+            </result>
+    	    <result name="success" type="chain">
+            	saentry
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+        <action name="sadodeleteopenso" class="com.auctionminister.action.sales.DeleteOpenSoAction">
+    	    <result name="input" type="velocity">
+            	/pages/saentry.vm
+            </result>
+    	    <result name="success" type="chain">
+            	saentry
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+        <action name="saentryitemselect" class="com.auctionminister.action.sales.SaLoadUnsavedAction">
+    	    <result name="input" type="velocity">
+            	/pages/itemlookup.vm
+            </result>
+    	    <result name="success" type="velocity">
+            	/pages/saentry.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+        <action name="sadoopensoline" class="com.auctionminister.action.sales.AddOpenSoLineAction">
+    	    <result name="input" type="velocity">
+            	/pages/saentry.vm
+            </result>
+    	    <result name="success" type="chain">
+            	saentry
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+       <action name="sadodeleteopenline" class="com.auctionminister.action.sales.DeleteOpenSoLineAction">
+    	    <result name="input" type="velocity">
+            	/pages/saentry.vm
+            </result>
+    	    <result name="success" type="chain">
+            	saentry
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+	    <action name="sadoaddso" class="com.auctionminister.action.sales.AddOpenSoAction">
+    	    <result name="input" type="velocity">
+            	/pages/saentry.vm
+            </result>
+    	    <result name="success" type="chain">
+            	saentry
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+	    <action name="saentry" class="com.auctionminister.action.sales.SaLoadUnsavedAction">
+    	    <result name="input" type="velocity">
+            	/pages/saentry.vm
+            </result>
+    	    <result name="success" type="velocity">
+            	/pages/saentry.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+	    <action name="saposting" class="com.auctionminister.action.sales.SaBatchLookupAction">
+    	    <result name="success" type="velocity">
+            	/pages/saposting.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+        <action name="sadopostsobatches" class="com.auctionminister.action.sales.PostSoBatchAction">
+    	    <result name="input" type="velocity">
+            	/pages/saposting.vm
+            </result>
+    	    <result name="success" type="velocity">
+            	/pages/sapostingresults.vm
+            </result>
+           <interceptor-ref name="recordCheckStack"/>
+	    </action>
+        <action name="sadodeletebatch" class="com.auctionminister.action.sales.DeleteSoBatchAction">
+    	    <result name="success" type="chain">
+            	saposting
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+	    <action name="salookup" class="com.auctionminister.action.sales.SaLookupAction">
+    	    <result name="input" type="velocity">
+            	/pages/salookup.vm
+            </result>
+    	    <result name="success" type="velocity">
+            	/pages/salookup.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+	    <action name="saview" class="com.auctionminister.action.sales.SaLoadAction">
+    	    <result name="success" type="velocity">
+            	/pages/saview.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+        <action name="sadoseteditopenso" class="com.auctionminister.action.sales.EditOpenSoAction">
+    	    <result name="input" type="velocity">
+            	/pages/salookup.vm
+            </result>
+    	    <result name="success" type="chain">
+            	saentry
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+        <action name="sadocustomerlookup" class="com.auctionminister.action.sales.SaCustomerLookupAction">
+    	    <result name="input" type="velocity">
+            	/pages/sareturns.vm
+            </result>
+    	    <result name="success" type="velocity">
+            	/pages/sacustomerselect.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action>
+	   <action name="sareturns" class="com.auctionminister.action.sales.SaLoadSaleItemsAction">
+    	    <result name="input" type="velocity">
+            	/pages/sacustomerselect.vm
+            </result>
+    	    <result name="success" type="velocity">
+            	/pages/sareturns.vm
+            </result>
+            <interceptor-ref name="defaultStackWithSecurity"/>
+	    </action> 
+        <action name="sadosoreturn" class="com.auctionminister.action.sales.SaReturnAction">
+    	    <result name="input" type="velocity">
+            	/pages/sareturns.vm
+            </result>
+    	    <result name="success" type="chain">
+            	sareturns
+            </result>
+            <interceptor-ref name="recordCheckStack"/>
+	    </action> 
+	
+	</package>
+		    
+</struts>
+	

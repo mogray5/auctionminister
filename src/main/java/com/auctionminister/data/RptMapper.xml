@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auctionminister.data">
+
+	<select id="GetReport" parameterType="java.lang.Integer"
+		resultType="ReportData">
+    	    <![CDATA[ SELECT REPORTID as ReportId,
+    	    REPORTNAME as ReportName,
+    	    REPORTACTION as ReportAction,
+    	    REPORTFILE as ReportFile
+    	    FROM sy005
+    	    WHERE REPORTID = #{value} ]]>
+	</select>
+
+	<select id="GetReportParams" parameterType="java.lang.Integer"
+		resultType="ReportParamData">
+    	    <![CDATA[ SELECT PARAMID as ParamId,
+    	    REPORTID as ReportId,
+    	    PARAMNAME as ParamName,
+    	    PARAMFRIENDLYNAME as ParamFriendlyName,
+    	    PARAMTYPE as ParamType,
+    	    PARAMDEFAULTSTYPE as ParamDefaultsType,
+    	    PARAMDEFAULTS as ParamDefaults,
+    	    PARAMLENGTH as ParamLength
+    	    FROM sy004
+    	    WHERE REPORTID = #{value} 
+    	    ORDER BY PARAMID ]]>
+
+	</select>
+
+	<select id="RptProfitLoss" parameterType="AccountParams"
+		resultType="AccountData">
+		   <![CDATA[  SELECT a.YR as Year,
+			c.ACCOUNTID as AccountIndex, 
+			c.ACCOUNTDESC as AccountDescription,
+			a.CREDITBALANCE as CreditBalance, 
+			a.DEBITBALANCE as DebitBalance
+			FROM gl003 a inner join sy001 b on 
+			a.USERID = b.USERID inner join gl001 c on
+			a.ACTINDEX = c.ACTINDEX 
+			where a.USERID=#{userId} AND c.ACCTTYPE<>6 AND
+			a.YR = #{year}
+			ORDER BY ACCOUNTID ]]>
+
+	</select>
+
+	<select id="RptProfitLossMonth" parameterType="AccountParams"
+		resultType="AccountData">
+		   <![CDATA[  SELECT a.YR as Year,
+		   	a.Mth as Month,
+			c.ACCOUNTID as AccountIndex, 
+			c.ACCOUNTDESC as AccountDescription,
+			a.CREDITBALANCE as CreditBalance, 
+			a.DEBITBALANCE as DebitBalance
+			FROM gl004 a inner join sy001 b on 
+			a.USERID = b.USERID inner join gl001 c on
+			a.ACTINDEX = c.ACTINDEX 
+			where a.USERID=#{userId} AND c.ACCTTYPE<>6 AND
+			a.YR = #{year} AND a.MTH = #{month}
+			ORDER BY ACCOUNTID ]]>
+
+	</select>
+
+	<select id="RptItemActivitySales" parameterType="AccountParams"
+		resultType="com.auctionminister.data.RptSalesActivity">
+		    <![CDATA[  
+		    
+		    SELECT date_part('month', sh.sodate) as month, date_part('year',sh.sodate) as year, 
+			sd.itemid, sum(sd.saleprice * sd.qtysold) as sales,
+			sum(sd.qtysold) as qty, 
+            sum((sd.saleprice - COALESCE(build.buildcost, iv.currcost)) * sd.qtysold) as profit
+			from sa301 sh
+			    inner join sa302 sd
+			        on sh.sonumber = sd.sonumber
+			    inner join sa300 bat
+			        on sh.docid = bat.docid
+                inner join iv001 iv
+                    on sd.itemid = iv.itemid
+                left outer join 
+                (
+                   select iv003.ITEMID, iv003.USERID,
+                   SUM(iv003.ELEMENTQTY * iv001.CURRCOST) AS BUILDCOST
+                   FROM iv001 INNER JOIN iv003
+                   ON iv001.ITEMID = iv003.ELEMENTITEMID AND
+                   iv001.USERID = iv003.USERID
+                   GROUP BY iv003.ITEMID, iv003.USERID
+                ) build
+                    on build.itemid = sd.itemid
+			    where bat.userid = #{userId}
+			group by date_part('month', sh.sodate), date_part('year', sh.sodate), sd.itemid
+			having date_part('month', sh.sodate) = #{month} and date_part('year',sh.sodate) = #{year}
+			order by profit desc, sales desc ]]>
+	</select>
+	<select id="RptItemActivityPurchases" parameterType="AccountParams"
+		resultType="com.auctionminister.data.RptPurchaseActivity">
+		    <![CDATA[  
+			   SELECT date_part('month', ph.podate) as month, date_part('year', ph.podate) as year, 
+		    pd.itemid, sum(pd.purchprice * pd.qtypurch) as purchases,
+		    sum(pd.qtypurch) as qty
+		    from po301 ph
+		        inner join po302 pd
+		            on ph.ponumber = pd.ponumber
+		        inner join po300 bat
+		            on ph.docid = bat.docid
+		        where bat.userid = #{userId}
+		    group by date_part('month', ph.podate), date_part('year', ph.podate), pd.itemid
+		    having date_part('month', ph.podate) = #{month} and date_part('year', ph.podate) = #{year}
+		    order by purchases desc]]>
+	</select>
+
+
+</mapper>

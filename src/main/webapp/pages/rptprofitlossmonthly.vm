@@ -1,0 +1,69 @@
+#parse("/pages/top.vm")
+#parse("/pages/workmenu.vm")
+#hmenu($itemlist '100%' "right" "workmenu" 4)
+
+
+#if ($isSecure=="S")
+	<br><br>
+	
+	#mainheader("Profit Loss Report (Monthly)")
+	
+	<br><br>
+	
+	<form name="frmUpdateMonth" method="POST" action="rptprofitlossmonthly.action">
+		#formstart("200px" "center")
+	
+		#textinput("Year" "Year" $Year 10)
+	    #textinput("Month" "Month" $Month 10)
+
+	
+	<br>
+		#menulink('javascript:document.frmUpdateMonth.submit();' 'Refresh' 'menulink')
+	
+	<br>
+	<br>
+		#formend()
+	
+	#set($index = 0)
+	<div align="center">
+	<table border=1 width="90%" cellpadding="5">
+		<tr class="rowstyle1">
+		<td>Year</td>
+		<td>Month</td>
+		<td>Account ID</td>
+		<td>Account Description</td>
+		<td>Amount</td>
+		</tr>
+		#foreach ($line in $ReportData)
+			
+			#if($index==0)
+				#set($style="rowstyle2")
+				#set($index=1)
+			#else
+				#set($style="rowstyle3")
+				#set($index=0)
+			#end
+			
+			<tr class="$style">
+			<td>$line.getYear()</td>
+			<td>$line.getMonth()</td>
+			<td>$line.getAccountIndex()</td>
+			<td>$line.getAccountDescription()</td>
+			<td>$line.getGlAmountAsString()</td>
+			</tr>
+		#end
+	</table>
+	
+	<h3>Total Profit Loss: $reportTotal</h3>
+	
+	</div>
+	
+	  
+	
+	</form>
+	
+
+#else
+	#denied()
+#end
+	

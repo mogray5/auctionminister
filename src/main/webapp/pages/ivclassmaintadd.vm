@@ -1,0 +1,38 @@
+#parse("/pages/top.vm")
+#parse("/pages/workmenu.vm")
+#hmenu($itemlist '100%' "right" "workmenu" 1)
+#parse("/pages/inventorymenu.vm")
+#hmenu($itemlist '100%' "right" "submenu" 99)
+
+#if ($isSecure=="S")
+	<br><br>
+	#mainheader("Item Class Maintenance")
+	
+	#sectionheader("Add New Item Class")
+	<form name="frmSave" method="POST" action="ivdoeditclass.action">
+	<input type="hidden" name ="ClassId" value="$!ItemClassData.getClassId()"/>
+	<div align="center">
+	<table class="formtable">
+	<tr><td>
+	   <div class="right"><span class="left">Name:</span>
+       		<input type="text" name="ClassName" value="$!ItemClassData.getClassName()" size="50"/>
+       </div>
+	   <div class="right"><span class="left">Description:</span>
+       		<textarea name="ClassDesc" rows=8 cols=48>$!ItemClassData.getClassDesc()</textarea>
+       </div>
+       <br>
+		#if($ItemClassData.getClassId()=="")
+			#set($maint1="#menulink('javascript:document.frmSave.submit();' 'Add' 'menulink')")
+		#else
+			#set($maint1="#menulink('javascript:document.frmSave.submit();' 'Save' 'menulink')")
+		#end
+		#set($maint2="#menulink('ivclasslookup.action' 'Back' 'menulink')")
+		#set($itemlist=[$maint1, $maint2])
+		#hmenu($itemlist '150px' "center" "submenu" 99)
+	</td><tr>
+	</table>
+	</div>
+	</form>
+#end
+
+#parse("/pages/bottom.vm")		

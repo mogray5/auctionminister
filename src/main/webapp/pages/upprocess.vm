@@ -1,0 +1,170 @@
+#parse("/pages/amupload.vm")
+
+<br><br><br>
+
+#if ($isSecure=="S")
+
+	<div align="center">
+	#mainheader("Eve Transaction Upload")
+	#sectionheader("Transaction Review")
+
+<form name="frmSave" method="POST" action="upsave.action">
+
+ #startbaseinfo("Identify Transactions" 700)
+ <p>TODO</p>
+ #endbaseinfo()
+
+<br><br>
+
+#set($maint1="#menulink('upstartnew.action' 'Start New Upload' 'menulink')")
+#set($maint2="#menulink('updeleteintegrated.action' 'Remove Integrated' 'menulink')")
+#set($maint3="#menulink('updeletenew.action' 'Remove Unprocessed' 'menulink')")
+#set($maint4="#menulink('updeleteerrors.action' 'Remove Errors' 'menulink')")
+#set($maint5="#menulink('updeleteunmarked.action' 'Remove Unmarked' 'menulink')")
+#set($itemlist=[$maint1, $maint2, $maint3, $maint4, $maint5])
+#hmenu($itemlist '550px' "center" "submenu" 99)
+
+<br>
+
+#set($maint1="#menulink('javascript:document.frmSave.submit();' 'Save' 'menulink')")
+#set($maint2="#menulink('upsubmital.action' 'Next' 'menulink')")
+#set($itemlist=[$maint1, $maint2])
+#hmenu($itemlist '100px' "center" "submenu" 99)
+
+<br>
+
+<table border=1>
+<tr>
+	<td class="upcode1" width="90px" align="center">Unprocessed</td>
+	<td class="upcode2" width="90px" align="center">Integrated</td>
+	<td class="upcode3" width="90px" align="center">Error</td>
+</tr>
+</table>
+
+</div>
+
+<div align="center">
+<table border=1 cellpadding="5" width="98%">
+	<tr>
+	<tr class="rowstyle1">
+		<td>Buyer/Seller</td>
+		<td colspan="2">Item Name</td>
+		<td>Location</td>
+		<td colspan="4">Item Desc</td>
+	</tr>
+	<tr class="rowstyle1">
+		<td>Date</td>
+		<td>Price</td>
+		<td>Quantity</td>
+		<td>Include</td>
+		<td>Trx Type</td>
+	</tr>
+	#foreach ($line in $UploadData)
+		
+		#if($line.getAmStatus()==1)
+			#set($style="upcode1")
+		#elseif($line.getAmStatus()==2)
+			#set($style="upcode2")
+		#elseif($line.getAmStatus()==3)
+			#set($style="upcode3")
+		#else
+			#set($style="rowstyle2")
+		#end
+	
+		<tr class="$style">
+			<td>$line.getTmpBuyerId()</td>
+			<td colspan="2">$line.getTmpItemId()</td>
+			<td>$line.getTmpType()</td>
+			<td colspan="4">$line.getTmpSubject()</td>
+		</tr>		
+		
+		<tr class="$style">
+			<td>$line.getTmpDateString()</td>
+			<td>$line.getTmpPrice()</td>
+			<td>$line.getTmpQuantity()</td>
+		<td>
+		#if ($line.getAmInclude()==1)
+			<input type="checkbox" name="IncludeList" checked="checked" value="$line.getTrxIndex()"/></td>
+		#else
+			<input type="checkbox" name="IncludeList" value="$line.getTrxIndex()"/>
+			
+		</td>
+		#end
+		<td>
+			<select name="TrxType">
+				#if ($line.getAmType()==0)
+					<OPTION selected="selected" value="$line.getTrxIndex():0">SALE</OPTION>
+				#else
+					<OPTION value="$line.getTrxIndex():0">SALE</OPTION>
+				#end
+
+				#if ($line.getAmType()==1)
+					<OPTION selected="selected" value="$line.getTrxIndex():1">PURCHASE</OPTION>
+				#else
+					<OPTION value="$line.getTrxIndex():1">PURCHASE</OPTION>
+				#end
+
+				#if ($line.getAmType()==5)
+					<OPTION selected="selected" value="$line.getTrxIndex():5">STATION CHARGE</OPTION>
+				#else
+					<OPTION value="$line.getTrxIndex():5">STATION CHARGE</OPTION>
+				#end
+
+				#if ($line.getAmType()==6)
+					<OPTION selected="selected" value="$line.getTrxIndex():6">SHIPPING CHARGE</OPTION>
+				#else
+					<OPTION value="$line.getTrxIndex():6">SHIPPING CHARGE</OPTION>
+				#end
+
+				#if ($line.getAmType()==7)
+					<OPTION selected="selected" value="$line.getTrxIndex():7">OTHER CHARGE</OPTION>
+				#else
+					<OPTION  value="$line.getTrxIndex():7">OTHER CHARGE</OPTION>
+				#end
+				
+			</select>
+			</td>
+		</tr>
+		
+		#if($line.getAmStatus()>1)
+			<tr class="$style">
+				<td colspan="8" align="center"><b>$!line.getAmMsg()</b></td>
+			</tr>
+		#elseif($line.getAmType()==2)
+
+			<tr class="$style">
+			#if($line.getSoNumber()>0)
+				<td colspan="8" align="center">
+					Sale Number = $!line.getSoNumber()<br>
+					#baselink("upassignso.action?TrxIndex=$line.getTrxIndex()" "Re-Assign")
+				</td>
+			#else
+				<td colspan="8" align="center">
+					#baselink("upassignso.action?TrxIndex=$line.getTrxIndex()" "Assign Sale Number To Return")
+				</td>			
+			#end
+			</tr>
+			
+		#end
+		
+		
+		<tr class="$style"><td colspan="8" height="2"><img src="images/mnuborder.png" width="100%" height="2"/></td></tr>
+		
+	#end
+</table>
+</div>
+ <br>
+ 
+#set($maint1="#menulink('javascript:document.frmSave.submit();' 'Save' 'menulink')")
+#set($maint2="#menulink('upsubmital.action' 'Next' 'menulink')")
+#set($itemlist=[$maint1, $maint2])
+#hmenu($itemlist '100px' "center" "submenu" 99)
+
+
+</form>
+#else
+	#denied()
+#end
+
+
+#parse("/pages/bottom.vm")

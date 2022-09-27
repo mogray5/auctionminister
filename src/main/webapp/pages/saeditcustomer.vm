@@ -1,0 +1,41 @@
+#parse("/pages/top.vm")
+#parse("/pages/workmenu.vm")
+#hmenu($itemlist '100%' "right" "workmenu" 3)
+#parse("/pages/samenu.vm")
+#hmenu($itemlist '100%' "right" "submenu" 99)
+
+#if ($isSecure=="S")
+	<br><br>
+	#mainheader("Customer Maintenance")
+	
+	#sectionheader("Add/Edit Customer")	
+	
+	#set($maint1="#menulink('javascript:document.frmEditCustomer.submit();' 'Save' 'menulink')")
+	#set($maint2="#menulink('sacustomerlookup.action' 'Back' 'menulink')")
+	#set($itemlist=[$maint1, $maint2])
+	#hmenu($itemlist '150px' "center" "submenu" 99)
+
+	<br>
+	
+	<form name="frmEditCustomer" method="POST" action="sadoeditcustomer.action">
+	#formstart("500px" "center")
+
+		#if($Customer.getCustName()!="")
+		<input type="hidden" name="CustomerId" value="$!Customer.getCustomerId()"/>
+		#dataout("Customer Id" $!Customer.getCustomerId())
+		#end
+		
+		#textinput("Customer Name" "CustName" $!Customer.getCustName() 25)
+		#textinput("Buyer Id" "BuyerId" $!Customer.getBuyerId() 25)
+		#textinput("Email Address" "CustEmail" $!Customer.getCustEmail() 25)
+		#textinput("Phone Number" "ContactPhone" $!Customer.getContactPhone() 15)
+		#textareainput("Shipping Address" "ShippingAddress" $!Customer.getShippingAddress() 5 40)
+	
+	#formend()	
+	</form>
+	
+#else
+	#denied()
+#end
+
+#parse("/pages/bottom.vm")

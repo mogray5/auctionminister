@@ -1,0 +1,55 @@
+#parse("/pages/top.vm")
+#parse("/pages/workmenu.vm")
+#hmenu($itemlist '100%' "right" "workmenu" 2)
+#parse("/pages/pomenu.vm")
+#hmenu($itemlist '100%' "right" "submenu" 99)
+
+#if ($isSecure=="S")
+	<br><br>
+	#mainheader("PO View")
+	<br>
+	#sectionheader("Purchase Order: $!PoHeader.getPoNumber()")
+
+		#formstart("300px" "center")
+			#dataout("PO Number" "$!PoHeader.getPoNumber()")
+			#dataout("Batch Id" "$!PoHeader.getBatchId()")
+			#dataout("PO Date" "$!PoHeader.getPoDateString()") 
+			#dataout("Vendor" "$!PoHeader.getVendorName()")
+		#formend()
+	
+	<br>
+	
+	#set($index = 0)
+	<div align="center">
+	<table border=1 width="70%" cellpadding="5">
+		<tr class="rowstyle1">
+		<td>Item Id</td>
+		<td>Item Desc</td>
+		<td>Purchase Price</td>
+		<td>Qty Purchased</td>
+		</tr>
+		#foreach ($line in $PoLines)
+			
+			#if($index==0)
+				#set($style="rowstyle2")
+				#set($index=1)
+			#else
+				#set($style="rowstyle3")
+				#set($index=0)
+			#end
+	
+			<tr class="$style">
+			<td>#baselink("ivitemview.action?itemId=$line.getItemId()" "$line.getItemId()")</td>
+			<td>$line.getItemDesc()</td>
+			<td>$line.getPurchPrice()</td>
+			<td>$line.getQtyPurch()</td>
+			</tr>
+		#end
+	</table>
+	</div>
+	
+#else
+	#denied()
+#end
+
+#parse("/pages/bottom.vm")

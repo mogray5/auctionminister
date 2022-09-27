@@ -1,0 +1,36 @@
+#parse("/pages/top.vm")
+
+<table class="fullwidth">
+<tr>
+<td>
+
+#parse("/pages/workmenu.vm")
+#hmenu($itemlist '100%' "right" "workmenu" 99)
+
+<br><br>
+
+#if ($isSecure=="S")
+
+	<div align="center">
+	#startbaseinfo("Welcome $userData.getFirstName() $userData.getLastName()!" 300)
+	<p class="msgblock">
+	This is the main work page for users of Auction Minister.  Using the menu 
+	above you can manage your inventory, your customers, and also import data 
+	into the system from other systems you may also be using such as Paypal.
+	</p><br>
+	#endbaseinfo()
+	</div>
+
+#else
+	#denied()
+#end
+
+</td>
+</tr>
+</table>
+
+
+
+
+
+#parse("/pages/bottom.vm")

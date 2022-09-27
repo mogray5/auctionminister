@@ -1,0 +1,23 @@
+--// create gl001 table
+-- Migration SQL that makes the change goes here.
+
+CREATE TABLE gl001 
+(
+  ACTINDEX INTEGER NOT NULL DEFAULT 0,
+  ACCOUNTID varchar(50) NOT NULL DEFAULT '',
+  ACCOUNTDESC varchar(255) NOT NULL DEFAULT '',
+  ACCTTYPE SMALLINT NOT NULL DEFAULT 0,
+  CONSTRAINT PK_GL001 PRIMARY KEY (ACTINDEX) USING INDEX TABLESPACE pg_default, 
+  CONSTRAINT UK_GL001_1 UNIQUE (ACCOUNTID) USING INDEX TABLESPACE pg_default
+) 
+WITH (
+  OIDS = FALSE
+)
+;
+
+ALTER TABLE gl001 OWNER TO auctionminister;
+
+--//@UNDO
+-- SQL to undo the change goes here.
+
+DROP TABLE gl001;

@@ -1,0 +1,159 @@
+#parse("/pages/top.vm")
+#parse("/pages/workmenu.vm")
+#hmenu($itemlist '100%' "right" "workmenu" 3)
+#parse("/pages/samenu.vm")
+#hmenu($itemlist '100%' "right" "submenu" 99)
+
+#if ($isSecure=="S")
+	<br><br>
+	#mainheader("Sales Order Entry")
+	
+	#if($SoHeader.getSoNumber())
+
+		#set($maint1="#menulink('javascript:document.frmSaveSo.submit();' 'Save' 'menulink')")
+		#set($maint2="#menulink('javascript:document.frmClearSo.submit();' 'Clear' 'menulink')")
+		#set($itemlist=[$maint1, $maint2])
+		#hmenu($itemlist '100px' "center" "submenu" 99)
+
+		<br><br>
+
+		#sectionheader("Sales Order: $!SoHeader.getSoNumber()")
+
+		<form name="frmSaveSo" method="POST" action="sadosaveopenso.action">
+			#formstart("500px" "center")
+
+				<input type="hidden" name="SoNumber" value="$!SoHeader.getSoNumber()"/>	
+				<input type="hidden" name="DocId" value="$!SoHeader.getDocId()"/>	
+				
+				<table width="500px">
+				<tr>
+					<td>
+						#dataout("Sale Number" "$!SoHeader.getSoNumber()")
+					</td><td>
+						#dataout("Batch Id" "$!SoHeader.getBatchId()")
+					</td>
+				</tr><tr>
+					<td>
+						#textinput("Sale Date" "SoDate" "$!SoHeader.getSoDateString()" 10) 
+					</td><td>
+
+					#startddinput("Customer" "CustomerId")
+						#foreach($customer in $CustomerList)
+							#if($SoHeader.getCustomerId()==$customer.getCustomerId())
+								#ddoption($!customer.getCustName() $!customer.getCustomerId() ".")	
+							#else
+								#ddoption($!customer.getCustName() $!customer.getCustomerId() "")	
+							#end
+						#end
+					#endddinput()
+				</td></tr>
+				<tr colspan=2>
+				<td>#textinput("Paypal Fee" "PaypalFee" "$!SoHeader.getPaypalFee()" 5)</td>
+				</table>
+			#formend()
+		</form>
+
+		<form name="frmClearSo" method=POST action="sadodeleteopenso.action">
+			<input type="hidden" name="SoNumber" value="$!SoHeader.getSoNumber()"/>	
+			<input type="hidden" name="DocId" value="$!SoHeader.getDocId()"/>
+			<input type="hidden" name="BatchId" value="$!SoHeader.getBatchId()"/>		
+		</form>
+		
+		<br>
+	
+		#sectionheader("Add New Sale Items")
+	
+		#set($maint1="#menulink('javascript:document.frmAddLine.submit();' 'Add Line' 'menulink')")
+		#set($itemlist=[$maint1])
+		#hmenu($itemlist '70px' "center" "submenu" 99)
+	
+		<br>
+
+		#itemsearchform("ivdoitemlookup4.action" "saentryitemselect.action" "Y")
+
+		<form name="frmAddLine" method="POST" action="sadoopensoline.action">
+			<input type="hidden" name="SoNumber" value="$!SoHeader.getSoNumber()"/>	
+			#formstart("500px" "center")
+				
+				<table width="550px" cellpadding="3">
+				<tr>
+					<td>
+						#textinput("Item Id" "ItemId" "$!ItemId" 15) 
+					</td><td>
+						#textinput("Sale Price" "SalePrice" "" 10)
+					</td><td>
+						#textinput("Qty" "QtySold" "" 10)  
+					</td>
+				</tr>
+				</table>
+
+			#formend()
+		</form>
+
+	<br>
+
+	#sectionheader("Existing Line Items")
+
+	#set($index = 0)
+	<div align="center">
+	<table border=1 width="70%" cellpadding="5">
+		<tr class="rowstyle1">
+		<td>Item Id</td>
+		<td>Item Desc</td>
+		<td>Sale Price</td>
+		<td>Qty Sold</td>
+		<td></td>
+		</tr>
+		#foreach ($line in $SoLines)
+			
+			#if($index==0)
+				#set($style="rowstyle2")
+				#set($index=1)
+			#else
+				#set($style="rowstyle3")
+				#set($index=0)
+			#end
+	
+			<tr class="$style">
+			<td><a href="ivitemview.action?itemId=$line.getItemId()">$line.getItemId()</a></td>
+			<td>$line.getItemDesc()</td>
+			<td>$line.getSalePrice()</td>
+			<td>$line.getQtySold()</td>
+			<td class="center">#baselink("sadodeleteopenline.action?SoNumber=$!line.getSoNumber()&ItemId=$!line.getItemId()" "Delete")</td>
+			</tr>
+		#end
+	</table>
+	</div>
+
+	#else
+	
+		#set($maint1="#menulink('javascript:document.frmAddSo.submit();' 'Add New Sale' 'menulink')")
+		#set($itemlist=[$maint1])
+		#hmenu($itemlist '100px' "center" "submenu" 99)
+
+		<br><br>
+
+		<form name="frmAddSo" method="POST" action="sadoaddso.action">
+			#formstart("250px" "center")
+			#textinput("Enter Batch ID" "BatchId" "$!SoHeader.getBatchId()" 15) 
+			
+					#startddinput("Customer" "CustomerId")
+						#foreach($customer in $CustomerList)
+							#if($SoHeader.getCustomerId()==$customer.getCustomerId())
+								#ddoption($!customer.getCustName() $!customer.getCustomerId() ".")	
+							#else
+								#ddoption($!customer.getCustName() $!customer.getCustomerId() "")	
+							#end
+						#end
+					#endddinput()
+			
+			#formend()
+		</form>
+
+	#end
+
+#else
+	#denied()
+#end
+
+#parse("/pages/bottom.vm")

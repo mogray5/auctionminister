@@ -1,0 +1,23 @@
+#parse("/pages/top.vm")
+
+<br>
+<div align="center">
+#startbaseinfo("Error Message" 500)
+<br>
+The below error has occurred in Auction Minister.  If you need help resolving
+this error please contact 
+<a href="mailto:amsupport@auctionminister.com">Auction Minister Support</a>.
+
+<br><br>
+
+<table width="85%" align="center">
+  #foreach ($value in $actionErrors)  
+  <tr>
+    <td><img border="0" align="center" src="images/err.png"/></td><td>$value</td>
+  </tr>  
+  #end  
+</table
+<br>
+#endbaseinfo()
+</div>
+#parse("/pages/bottom_noerrs.vm")

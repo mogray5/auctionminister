@@ -1,0 +1,70 @@
+#parse("/pages/top.vm")
+#parse("/pages/workmenu.vm")
+#hmenu($itemlist '100%' "right" "workmenu" 1)
+#parse("/pages/inventorymenu.vm")
+#hmenu($itemlist '100%' "right" "submenu" 2)
+
+#if ($isSecure=="S")
+	<br><br>
+	
+	#mainheader("Assembly Editor")
+	<form name="frmAddAssembly" method="POST" action="ivassembly.action">
+		#formstart("500px" "center")
+	
+		#startddinput("Assembly Item" "AssemblyItem")
+	   		#foreach($ListItem in $AssemblyItemList)
+	   			#if ($ListItem.getItemId()==$AssemblyItem)
+				  	#ddoption($!ListItem.getItemId() $!ListItem.getItemId() ".")
+				#else
+					#ddoption($!ListItem.getItemId() $!ListItem.getItemId() "")
+				#end	
+			#end
+	    #endddinput()
+	    <br>
+	    #menulink('javascript:document.frmAddAssembly.submit();' 'Refresh' 'menulink')
+		<br><br>
+	#startddinput("Element Item" "ElementItemId")
+   		#foreach($LineItem in $ItemList)
+			  #ddoption($!LineItem.getItemId() $!LineItem.getItemId() "")	
+		#end
+    #endddinput()
+	#textinput("Quantity" "ElementQty" "" 8)
+	
+	#menulink('javascript:document.frmAddAssembly.submit();' 'Add' 'menulink')
+	<br><br>
+	#set($index = 0)
+	<div align="center">
+	<table border=1 width="90%" cellpadding="5">
+		<tr class="rowstyle1">
+		<td>Element Id</td>
+		<td>Quantity</td>
+		<td></td>
+		</tr>
+		#foreach ($line in $ElementList)
+			
+			#if($index==0)
+				#set($style="rowstyle2")
+				#set($index=1)
+			#else
+				#set($style="rowstyle3")
+				#set($index=0)
+			#end
+	
+			<tr class="$style">
+			<td>$line.getElementItemID()</td>
+			<td>$line.getElementQtyAsString()</td>
+			<td class="center">#baselink("ivassembly.action?action=delete&elementItemId=$!line.getElementItemID()&assemblyItem=$!line.getItemID()" "Delete")</td>
+			</tr>
+		#end
+	</table>
+	</div>
+	
+	
+		#formend()    
+	</form>
+	
+
+#else
+	#denied()
+#end
+	

@@ -1,0 +1,46 @@
+#parse("/pages/top.vm")
+#parse("/pages/workmenu.vm")
+#hmenu($itemlist '100%' "right" "workmenu" 2)
+#parse("/pages/pomenu.vm")
+#hmenu($itemlist '100%' "right" "submenu" 99)
+
+#if ($isSecure=="S")
+	<br><br>
+	#mainheader("PO Other Costs")
+	
+	<div align="center">
+	#startbaseinfo("Other Costs?  What's this for?" 500)
+		This page is for recording other costs that you may incur against
+		your paypal account that are not linked to a specific sale.
+		<br>
+		For instance shipping fees charged by the US post office and payments you
+		make to Ebay are two examples.  These both affect your cost of doing business
+		and thus need to be added to Auction Minister.
+	#endbaseinfo()
+	</div>
+	
+	<br>
+	
+	#set($maint1="#menulink('javascript:document.frmOther.submit();' 'Apply Charge' 'menulink')")
+	#set($itemlist=[$maint1])
+	#hmenu($itemlist '100px' "center" "submenu" 99)
+	
+	<br>
+	
+	<form name="frmOther" method="POST" action="podocostsentry.action">
+		#formstart(300 "center")
+			#startddinput("Cost Type" "CostType")
+				#ddoption("Transaction Tax" "1" ".")
+				#ddoption("Brokers Fee" "2" "")
+				#ddoption("Other Charge" "3" "")
+			#endddinput()
+			
+			#textinput("Amount" "CostAmount" "0.0" 10)	
+		
+		#formend()
+	</form>
+	#else
+	#denied()
+#end
+
+#parse("/pages/bottom.vm")

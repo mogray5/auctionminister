@@ -1,0 +1,39 @@
+#parse("/pages/amupload.vm")
+
+<br><br><br>
+
+#if ($isSecure=="S")
+
+	<div align="center">
+	#mainheader("PayPal Upload")
+	#sectionheader("Assign Sale Number To Return")
+
+	<form name="frmAssign" method="POST" action="updoassignso.action">
+
+	 <input type="hidden" name="TrxIndex" value="$!TranLine.getTrxIndex()"/>
+	 
+	 #startbaseinfo("Message" 400)
+	 <p>In order to complete a return.  Auction Minister needs to know the Sale Number
+	 of the sale you wish to return.  You can look up the sale this paypal transaction is 
+	 referring to in Sales Order Lookup by search by the customer listed on the Paypal (C) transaction</p>
+	 #endbaseinfo()
+
+	<br><br>
+
+	#set($maint1="#menulink('javascript:document.frmAssign.submit()' 'Save' 'menulink')")
+	#set($maint2="#menulink('upcomma.action' 'Cancel' 'menulink')")
+	#set($itemlist=[$maint1, $maint2])
+	#hmenu($itemlist '100px' "center" "submenu" 99)
+
+	<br>
+	#formstart("300px" "center")
+		#dataout("Customer" $!TranLine.getTmpName())
+		#dataout("Sale Amount" $!TranLine.getTmpGross())
+		#textinput("Sale Number" "SoNumber" $!TranLine.getSoNumber() 20)
+	#formend()
+	</form>
+#else
+	#denied()
+#end
+
+#parse("/pages/bottom.vm")

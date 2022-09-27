@@ -1,0 +1,279 @@
+#parse("/pages/amupload.vm")
+
+<br><br><br>
+
+#if ($isSecure=="S")
+
+	<div align="center">
+	#mainheader("Eve Upload")
+	#sectionheader("Submital Page")
+
+<form name="frmProcess" method="POST" action="updosubmital.action">
+	<input type="hidden" name="BatchId" value="$!BatchId"/>
+
+#set($maint1="#menulink('upcomma.action' 'Cancel' 'menulink')")
+#set($maint2="#menulink('javascript:document.frmProcess.submit();' 'Next' 'menulink')")
+#set($itemlist=[$maint1, $maint2])
+#hmenu($itemlist '20%' "center" "submenu" 99)
+
+<br><br>
+
+#startbaseinfo("Submit Results" 500)
+ <p>Eve Minister is ready to add the below transactions to the database.
+ If you see errors in the list please click <b>Back</b> button to make changes.
+ Otherwise click <b>Next</b>
+ </p>
+ #endbaseinfo()
+
+<br><br>
+
+#if ($SoList.size()>0)
+
+#sectionheader("Sales")
+	
+	#set($index = 0)
+	<table border=1 width="90%" cellpadding="5">
+		<tr class="rowstyle1">
+		<td>Customer Name</td>
+		<td>Buyer Id</td>
+		<td>Item Id</td>
+		<td>Price</td>
+		<td>Quantity</td>
+		<td>Gross Amount</td>
+		</tr>
+		#foreach ($line in $SoList)
+			
+			#if($index==0)
+				#set($style="rowstyle2")
+				#set($index=1)
+			#else
+				#set($style="rowstyle3")
+				#set($index=0)
+			#end
+	
+			<tr class="$style">
+			<td>$line.getTmpName()</td>
+			<td>$line.getTmpBuyerId()</td>
+			<td>$line.getTmpItemId()</td>
+			<td>$line.getTmpPrice()</td>
+			<td>$line.getTmpQuantity()</td>
+			<td>$line.getGrossAmt()</td>
+			</tr>
+		#end
+	</table>
+	<br><br>
+#end
+
+#if ($PoList.size()>0)
+#sectionheader("Purchases")
+		
+	#set($index = 0)
+	<table border=1 width="90%" cellpadding="5">
+		<tr class="rowstyle1">
+		<td>Vendor</td>
+		<td>Buyer Id</td>
+		<td>Price</td>
+		<td>Quantity</td>
+		<td>Gross Amount</td>
+		</tr>
+		#foreach ($line in $PoList)
+			
+			#if($index==0)
+				#set($style="rowstyle2")
+				#set($index=1)
+			#else
+				#set($style="rowstyle3")
+				#set($index=0)
+			#end
+	
+			<tr class="$style">
+			<td>$line.getTmpName()</td>
+			<td>$line.getTmpBuyerId()</td>
+			<td>$line.getTmpPrice()</td>
+			<td>$line.getTmpQuantity()</td>
+			<td>$line.getGrossAmt()</td>
+			</tr>
+		#end
+	</table>
+	<br><br>
+#end
+
+#if ($EbayChargeList.size()>0)
+#sectionheader("Fees")
+
+
+	#set($index = 0)
+	<table border=1 width="90%" cellpadding="5">
+		<tr class="rowstyle1">
+		<td>Description</td>
+		<td>Price</td>
+		<td>Quantity</td>
+		<td>Gross Amount</td>
+		</tr>
+		#foreach ($line in $EbayChargeList)
+			
+			#if($index==0)
+				#set($style="rowstyle2")
+				#set($index=1)
+			#else
+				#set($style="rowstyle3")
+				#set($index=0)
+			#end
+	
+			<tr class="$style">
+			<td>$line.getTmpName()</td>
+			<td>$line.getTmpPrice()</td>
+			<td>$line.getTmpQuantity()</td>
+			<td>$line.getGrossAmt()</td>
+			</tr>
+		#end
+	</table>
+	<br><br>
+#end
+
+#if ($PaypalChargeList.size()>0)
+#sectionheader("Paypal Charges")
+		
+	#set($index = 0)
+	<table border=1 width="90%" cellpadding="5">
+		<tr class="rowstyle1">
+		<td>Description</td>
+		<td>Price</td>
+		<td>Quantity</td>
+		<td>Gross Amount</td>
+		</tr>
+		#foreach ($line in $PaypalChargeList)
+			
+			#if($index==0)
+				#set($style="rowstyle2")
+				#set($index=1)
+			#else
+				#set($style="rowstyle3")
+				#set($index=0)
+			#end
+	
+			<tr class="$style">
+			<td>$line.getTmpName()</td>
+			<td>$line.getTmpPrice()</td>
+			<td>$line.getTmpQuantity()</td>
+			<td>$line.getGrossAmt()</td>
+			</tr>
+		#end
+	</table>
+	<br><br>
+#end
+
+#if ($ShipChargeList.size()>0)
+#sectionheader("Shipping Charges")
+		
+	#set($index = 0)
+	<table border=1 width="90%" cellpadding="5">
+		<tr class="rowstyle1">
+		<td>Shipping Co.</td>
+		<td>Price</td>
+		<td>Quantity</td>
+		<td>Gross Amount</td>
+		</tr>
+		#foreach ($line in $ShipChargeList)
+			
+			#if($index==0)
+				#set($style="rowstyle2")
+				#set($index=1)
+			#else
+				#set($style="rowstyle3")
+				#set($index=0)
+			#end
+	
+			<tr class="$style">
+			<td>$line.getTmpName()</td>
+			<td>$line.getTmpPrice()</td>
+			<td>$line.getTmpQuantity()</td>
+			<td>$line.getGrossAmt()</td>
+			</tr>
+		#end
+	</table>
+	<br><br>
+#end
+
+#if ($OtherChargeList.size()>0)
+#sectionheader("Other Charges")
+		
+	#set($index = 0)
+	<table border=1 width="90%" cellpadding="5">
+		<tr class="rowstyle1">
+		<td>Description</td>
+		<td>Price</td>
+		<td>Quantity</td>
+		<td>Gross Amount</td>
+		</tr>
+		#foreach ($line in $OtherChargeList)
+			
+			#if($index==0)
+				#set($style="rowstyle2")
+				#set($index=1)
+			#else
+				#set($style="rowstyle3")
+				#set($index=0)
+			#end
+	
+			<tr class="$style">
+			<td>$line.getTmpName()</td>
+			<td>$line.getTmpPrice()</td>
+			<td>$line.getTmpQuantity()</td>
+			<td>$line.getGrossAmt()</td>
+			</tr>
+		#end
+	</table>
+
+#end
+
+#if ($ReturnList.size()>0)
+#sectionheader("Customer Refunds")
+		
+	#set($index = 0)
+	<table border=1 width="90%" cellpadding="5">
+		<tr class="rowstyle1">
+		<td>Customer</td>
+		<td>Price</td>
+		<td>Quantity</td>
+		<td>Gross Amount</td>
+		</tr>
+		#foreach ($line in $ReturnList)
+			
+			#if($index==0)
+				#set($style="rowstyle2")
+				#set($index=1)
+			#else
+				#set($style="rowstyle3")
+				#set($index=0)
+			#end
+	
+			<tr class="$style">
+			<td>$line.getTmpName()</td>
+			<td>$line.getTmpPrice()</td>
+			<td>$line.getTmpQuantity()</td>
+			<td>$line.getGrossAmt()</td>
+			</tr>
+		#end
+	</table>
+
+#end
+
+<br><br>
+
+#set($maint1="#menulink('upcomma.action' 'Cancel' 'menulink')")
+#set($maint2="#menulink('javascript:document.frmProcess.submit();' 'Next' 'menulink')")
+#set($itemlist=[$maint1, $maint2])
+#hmenu($itemlist '20%' "center" "submenu" 99)
+
+
+	</form>
+	</div>
+
+
+#else
+	#denied()
+#end
+
+
+#parse("/pages/bottom.vm")

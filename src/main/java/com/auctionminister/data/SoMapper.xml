@@ -1,0 +1,497 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auctionminister.data">
+
+	<resultMap id="SaBatchResults" type="SaBatchData">
+		<result property="userId" column="USERID" />
+		<result property="docId" column="DOCID" />
+		<result property="batchId" column="BATCHID" />
+		<result property="batchDate" column="BATCHDATE" />
+	</resultMap>
+
+	<resultMap id="SaHeaderResults" type="SaHeaderData">
+		<result property="batchId" column="BATCHID" />
+		<result property="userId" column="USERID" />
+		<result property="docId" column="DOCID" />
+		<result property="soNumber" column="SONUMBER" />
+		<result property="customerId" column="CUSTOMERID" />
+		<result property="custName" column="CUSTNAME" />
+		<result property="soDate" column="SODATE" />
+		<result property="saved" column="SAVED" />
+		<result property="paypalFee" column="PAYPALFEE" />
+	</resultMap>
+
+	<select id="GetCustomerList" parameterType="UserSmallData"
+		resultType="CustomerData">
+        <![CDATA[ select 
+            USERID as UserId, 
+            CUSTOMERID as CustomerId,
+            CUSTNAME as CustName,
+            PPBUYERID as BuyerId,
+            CUSTEMAIL as CustEmail,
+            CONTACTPHONE as ContactPhone,
+            SHIPPINGADDRESS as ShippingAddress
+            FROM cu001
+            WHERE USERID=#{userId}
+            ORDER BY CUSTNAME]]>
+	</select>
+
+	<select id="GetCustomerListSmall" parameterType="UserSmallData"
+		resultType="CustomerSmallData">
+        <![CDATA[ select 
+            CUSTOMERID as CustomerId,
+            CUSTNAME as CustName
+            FROM cu001
+            WHERE USERID=#{userId}
+            ORDER BY CUSTNAME]]>
+	</select>
+
+
+	<insert id="AddCustomer" parameterType="CustomerData">
+        <![CDATA[ insert into cu001
+            (USERID,
+            CUSTNAME, CUSTEMAIL, PPBUYERID,
+            CONTACTPHONE, SHIPPINGADDRESS)
+            VALUES (#{userId}, 
+            #{custName}, #{custEmail}, #{buyerId},
+            #{contactPhone}, #{shippingAddress})]]>
+	</insert>
+
+	<update id="EditCustomer" parameterType="CustomerData">
+        <![CDATA[ update cu001
+            set CUSTNAME=#{custName}, 
+            PPBUYERID=#{buyerId},
+            CUSTEMAIL=#{custEmail},
+            CONTACTPHONE=#{contactPhone}, 
+            SHIPPINGADDRESS=#{shippingAddress}
+            WHERE USERID=#{userId} AND CUSTOMERID=#{customerId}]]>
+	</update>
+
+	<select id="GetCustomer" parameterType="CustomerData"
+		resultType="CustomerData">
+        <![CDATA[ select 
+            USERID as UserId, 
+            CUSTOMERID as CustomerId,
+            CUSTNAME as CustName,
+            PPBUYERID as BuyerId,
+            CUSTEMAIL as CustEmail,
+            CONTACTPHONE as ContactPhone,
+            SHIPPINGADDRESS as ShippingAddress
+            FROM cu001
+            WHERE USERID=#{userId}
+            AND CUSTOMERID=#{customerId}]]>
+	</select>
+
+	<select id="GetOpenSoHeaderListByStatus" parameterType="SaHeaderData"
+		resultMap="SaHeaderResults">
+    <![CDATA[ SELECT c.BATCHID,
+            c.USERID, a.DOCID,
+            a.SONUMBER,
+            a.CUSTOMERID,
+            b.CUSTNAME,
+            a.SODATE,
+            a.SAVED,
+            a.PAYPALFEE
+        FROM sa101 a INNER JOIN cu001 b ON
+        a.CUSTOMERID = b.CUSTOMERID INNER JOIN
+        sa100 c ON a.DOCID = c.DOCID
+        WHERE c.USERID=#{userId} AND
+        a.SAVED=#{saved}
+        ORDER BY a.SONUMBER ]]></select>
+
+	<select id="GetOpenSoLineList" parameterType="SaHeaderData"
+		resultType="SaLineData">
+        <![CDATA[ SELECT a.SONUMBER as SoNumber,
+            a.ITEMID as ItemId,
+            b.ITEMDESC as ItemDesc,
+            a.SALEPRICE as SalePrice,
+            a.QTYSOLD as QtySold,
+            a.EVETXNID as EveTxnId
+        FROM sa102 a INNER JOIN iv001 b ON
+        a.ITEMID = b.ITEMID
+        WHERE b.USERID=#{userId} AND a.SONUMBER=#{soNumber}
+        ORDER BY a.ITEMID ]]></select>
+
+	<select id="GetOpenSoHeader" parameterType="SaHeaderData"
+		resultType="SaHeaderData">
+        <![CDATA[ SELECT c.BATCHID, 
+            c.USERID,
+            a.DOCID,
+            a.SONUMBER,
+            a.CUSTOMERID,
+            b.CUSTNAME,
+            a.SODATE,
+            a.SAVED,
+            a.PAYPALFEE
+        FROM sa101 a INNER JOIN cu001 b ON
+        a.CUSTOMERID = b.CUSTOMERID INNER JOIN
+        sa100 c on a.DOCID = c.DOCID
+        WHERE a.DOCID=#{docId} AND
+        a.SONUMBER=#{soNumber}]]>
+	</select>
+
+	<update id="EditOpenSoHeader" parameterType="SaHeaderData">
+        <![CDATA[ update sa101
+      set CUSTOMERID=#{customerId},
+      SODATE=#{soDate},
+      SAVED=#{saved},
+      PAYPALFEE=#{paypalFee}
+      WHERE DOCID=#{docId} AND SONUMBER=#{soNumber}
+       ]]></update>
+
+	<update id="ToggleEditSoHeader" parameterType="SaHeaderData">
+        <![CDATA[ update sa101
+      SET SAVED=#{saved}
+      WHERE DOCID=#{docId} AND SONUMBER=#{soNumber}
+       ]]></update>
+	<delete id="DeleteOpenSoLines" parameterType="java.lang.Long">
+        <![CDATA[ delete from sa102
+        WHERE SONUMBER=#{value}]]></delete>
+
+	<delete id="DeleteOpenSoHeader" parameterType="SaHeaderData">
+        <![CDATA[ delete from sa101
+            WHERE DOCID=#{docId} AND SONUMBER=#{soNumber}
+        ]]></delete>
+
+	<delete id="DeleteOpenSoLine" parameterType="SaLineData">
+        <![CDATA[ delete from sa102
+           WHERE SONUMBER=#{soNumber} AND ITEMID=#{itemId}]]></delete>
+	<select id="AddOpenSoLine" parameterType="SaLineData">
+        <![CDATA[ insert into sa102
+            (SONUMBER, ITEMID,
+            SALEPRICE, QTYSOLD, EVETXNID)
+        VALUES(#{soNumber}, #{itemId}, #{salePrice}, #{qtySold}, #{eveTxnId})]]></select>
+
+	<select id="GetOpenSoBatch" parameterType="SaBatchData"
+		resultType="SaBatchData">
+    <![CDATA[ SELECT USERID,
+            DOCID,
+            BATCHID,
+            BATCHDATE
+        FROM sa100
+        WHERE USERID=#{userId} AND BATCHID=#{batchId}]]></select>
+	<insert id="AddOpenSoBatch" parameterType="SaBatchData">
+        <![CDATA[ insert into sa100(USERID,
+        BATCHID, BATCHDATE)
+        VALUES(#{userId}, #{batchId}, #{batchDate})]]></insert>
+	<select id="GetLastOpenSoBatch" parameterType="UserSmallData"
+		resultType="java.lang.Long">
+        <![CDATA[ SELECT max(DOCID) as DocId
+        FROM sa100
+        WHERE USERID=#{userId}
+       ]]></select>
+	<select id="GetLastOpenSoHeader" parameterType="UserSmallData"
+		resultType="java.lang.Long">
+        <![CDATA[ SELECT max(a.SONUMBER) as SoNumber
+        FROM sa101 a inner join sa100 b on
+        a.DOCID = b.DOCID
+        WHERE b.USERID=#{userId}
+       ]]></select>
+
+	<insert id="AddSoHeader" parameterType="SaHeaderData">
+        <![CDATA[ insert into sa101
+            (DOCID,CUSTOMERID,
+            SODATE, SAVED, PAYPALFEE)
+        VALUES(#{docId}, #{customerId}, #{soDate}, #{saved}, #{paypalFee})]]></insert>
+	<select id="GetOpenSoBatchList" parameterType="java.lang.Long"
+		resultType="SaBatchData">
+    <![CDATA[ SELECT USERID,
+            DOCID,
+            BATCHID,
+            BATCHDATE
+        FROM sa100
+        WHERE USERID=#{value}
+        ORDER BY BATCHID ]]></select>
+
+	<select id="GetOpenSoHeaderList" parameterType="SaBatchData"
+		resultType="SaHeaderData">
+        <![CDATA[ SELECT c.BATCHID,
+            c.USERID, 
+            a.DOCID,
+            a.SONUMBER,
+            a.CUSTOMERID,
+            b.CUSTNAME,
+            a.SODATE,
+            a.SAVED,
+            a.PAYPALFEE
+         FROM sa101 a INNER JOIN cu001 b ON
+        a.CUSTOMERID = b.CUSTOMERID INNER JOIN
+        sa100 c ON a.DOCID = c.DOCID
+        WHERE c.USERID=#{userId} AND a.DOCID=#{docId}
+        ORDER BY a.SONUMBER ]]></select>
+	<delete id="DeleteOpenSoBatchByDocId" parameterType="SaHeaderData">
+        <![CDATA[ delete from sa100
+            WHERE USERID=#{userId} AND DOCID=#{docId} 
+        ]]></delete>
+	<select id="GetOpenSoLookupByBatch" parameterType="SaLookupParams"
+		resultType="SaHeaderData">
+    <![CDATA[ SELECT c.BATCHID,
+            c.USERID, a.DOCID,
+            a.SONUMBER,
+            a.CUSTOMERID,
+            b.CUSTNAME,
+            a.SODATE,
+            a.SAVED,
+            a.PAYPALFEE
+        FROM sa101 a INNER JOIN cu001 b ON
+        a.CUSTOMERID = b.CUSTOMERID INNER JOIN
+        sa100 c ON a.DOCID = c.DOCID
+        WHERE c.USERID=#{userId} AND
+        c.BATCHID=#{batchId}
+        ORDER BY a.SONUMBER ]]></select>
+	<select id="GetOpenSoLookupByDate" parameterType="SaLookupParams"
+		resultType="SaHeaderData">
+        <![CDATA[ SELECT c.BATCHID,
+            c.USERID, a.DOCID,
+            a.SONUMBER,
+            a.CUSTOMERID,
+            b.CUSTNAME,
+            a.SODATE,
+            a.SAVED,
+            a.PAYPALFEE
+        FROM sa101 a INNER JOIN cu001 b ON
+        a.CUSTOMERID = b.CUSTOMERID INNER JOIN
+        sa100 c ON a.DOCID = c.DOCID
+        WHERE c.USERID=#{userId} AND
+        a.SODATE>=#{startDate} AND 
+        a.SODATE <= #{endDate}
+        ORDER BY a.SODATE, a.SONUMBER ]]></select>
+	<select id="GetOpenSoLookupByNumber" parameterType="SaLookupParams"
+		resultType="SaHeaderData">
+    <![CDATA[ SELECT c.BATCHID,
+            c.USERID, a.DOCID,
+            a.SONUMBER,
+            a.CUSTOMERID,
+            b.CUSTNAME,
+            a.SODATE,
+            a.SAVED,
+            a.PAYPALFEE
+        FROM sa101 a INNER JOIN cu001 b ON
+        a.CUSTOMERID = b.CUSTOMERID INNER JOIN
+        sa100 c ON a.DOCID = c.DOCID
+        WHERE c.USERID=#{userId} AND
+        a.SONUMBER>=#{soNumber}
+        ORDER BY a.SONUMBER ]]></select>
+	<select id="GetOpenSoLookupByCustomer" parameterType="SaLookupParams"
+		resultType="SaHeaderData">
+    <![CDATA[ SELECT c.BATCHID,
+            c.USERID, a.DOCID,
+            a.SONUMBER,
+            a.CUSTOMERID,
+            b.CUSTNAME,
+            a.SODATE,
+            a.SAVED,
+            a.PAYPALFEE
+        FROM sa101 a INNER JOIN cu001 b ON
+        a.CUSTOMERID = b.CUSTOMERID INNER JOIN
+        sa100 c ON a.DOCID = c.DOCID
+        WHERE c.USERID=#{userId} AND
+        b.CUSTOMERID>=#{customerId}
+        ORDER BY b.CUSTNAME, a.SONUMBER ]]></select>
+	<select id="GetOpenSoLookupByCustomerName" parameterType="SaLookupParams"
+		resultType="SaHeaderData">
+    <![CDATA[ SELECT c.BATCHID,
+            c.USERID, a.DOCID,
+            a.SONUMBER,
+            a.CUSTOMERID,
+            b.CUSTNAME,
+            a.SODATE,
+            a.SAVED,
+            a.PAYPALFEE
+        FROM sa101 a INNER JOIN cu001 b ON
+        a.CUSTOMERID = b.CUSTOMERID INNER JOIN
+        sa100 c ON a.DOCID = c.DOCID
+        WHERE c.USERID=#{userId} AND
+        b.CUSTNAME LIKE #{custName}
+        ORDER BY b.CUSTNAME, a.SONUMBER ]]></select>
+
+	<select id="GetClosedSoLookupByBatch" parameterType="SaLookupParams"
+		resultType="SaHeaderData">
+        <![CDATA[ SELECT c.BATCHID,
+            c.USERID, a.DOCID,
+            a.SONUMBER,
+            a.CUSTOMERID,
+            b.CUSTNAME,
+            a.SODATE, 
+            1 as SAVED,
+            a.PAYPALFEE
+        FROM sa301 a INNER JOIN cu001 b ON
+        a.CUSTOMERID = b.CUSTOMERID INNER JOIN
+        sa300 c ON a.DOCID = c.DOCID
+        WHERE c.USERID=#{userId} AND
+        c.BATCHID=#{batchId}
+        ORDER BY c.BATCHID, a.SONUMBER ]]></select>
+	<select id="GetClosedSoLookupByDate" parameterType="SaLookupParams"
+		resultType="SaHeaderData">
+        <![CDATA[ SELECT c.BATCHID,
+            c.USERID, a.DOCID,
+            a.SONUMBER,
+            a.CUSTOMERID,
+            b.CUSTNAME,
+            a.SODATE, 
+            1 as SAVED,
+            a.PAYPALFEE
+        FROM sa301 a INNER JOIN cu001 b ON
+        a.CUSTOMERID = b.CUSTOMERID INNER JOIN
+        sa300 c ON a.DOCID = c.DOCID
+        WHERE c.USERID=#{userId} AND
+        a.SODATE>=#{startDate} AND 
+        a.SODATE <= #{endDate}
+        ORDER BY a.SODATE, a.SONUMBER ]]></select>
+	<select id="GetClosedSoLookupByNumber" parameterType="SaLookupParams"
+		resultType="SaHeaderData">
+        <![CDATA[ SELECT c.BATCHID,
+            c.USERID, a.DOCID,
+            a.SONUMBER,
+            a.CUSTOMERID,
+            b.CUSTNAME,
+            a.SODATE,
+            1 as SAVED,
+            a.PAYPALFEE
+        FROM sa301 a INNER JOIN cu001 b ON
+        a.CUSTOMERID = b.CUSTOMERID INNER JOIN
+        sa300 c ON a.DOCID = c.DOCID
+        WHERE c.USERID=#{userId} AND
+        a.SONUMBER>=#{soNumber}
+        ORDER BY a.SONUMBER ]]></select>
+	<select id="GetClosedSoLookupByCustomer" parameterType="SaLookupParams"
+		resultType="SaHeaderData">
+    <![CDATA[ SELECT c.BATCHID,
+            c.USERID, a.DOCID,
+            a.SONUMBER,
+            a.CUSTOMERID,
+            b.CUSTNAME,
+            a.SODATE,
+            1 as SAVED,
+            a.PAYPALFEE
+        FROM sa301 a INNER JOIN cu001 b ON
+        a.CUSTOMERID = b.CUSTOMERID INNER JOIN
+        sa300 c ON a.DOCID = c.DOCID
+        WHERE c.USERID=#{userId} AND
+        b.CUSTOMERID>=#{customerId}
+        ORDER BY b.CUSTNAME, a.SONUMBER ]]></select>
+
+	<select id="GetClosedSoLookupByCustomerName" parameterType="SaLookupParams"
+		resultType="SaHeaderData">
+    <![CDATA[ SELECT c.BATCHID,
+            c.USERID, a.DOCID,
+            a.SONUMBER,
+            a.CUSTOMERID,
+            b.CUSTNAME,
+            a.SODATE,
+            1 as SAVED,
+            a.PAYPALFEE
+        FROM sa301 a INNER JOIN cu001 b ON
+        a.CUSTOMERID = b.CUSTOMERID INNER JOIN
+        sa300 c ON a.DOCID = c.DOCID
+        WHERE c.USERID=#{userId} AND
+        b.CUSTNAME LIKE #{custName}
+        ORDER BY b.CUSTNAME, a.SONUMBER ]]></select>
+
+
+	<insert id="MoveSoHeaderToHistory" parameterType="SaHeaderData">
+        <![CDATA[
+            INSERT INTO sa301 (DOCID, SONUMBER, CUSTOMERID, SODATE, PAYPALFEE)
+            SELECT DOCID, SONUMBER, CUSTOMERID, SODATE, PAYPALFEE
+            FROM sa101
+            WHERE DOCID=#{docId} AND SONUMBER=#{soNumber}
+            ]]>
+	</insert>
+
+	<insert id="MoveSoLinesToHistory" parameterType="SaHeaderData">
+        <![CDATA[
+            INSERT INTO sa302 (SONUMBER, ITEMID, SALEPRICE, QTYSOLD, EVETXNID)
+            SELECT SONUMBER, ITEMID, SALEPRICE, QTYSOLD, EVETXNID
+            FROM sa102
+            WHERE SONUMBER=#{soNumber}
+            ]]>
+	</insert>
+	<insert id="MoveSoBatchToHistory" parameterType="SaHeaderData">
+        <![CDATA[
+            INSERT INTO sa300 (USERID, DOCID, BATCHID, BATCHDATE)
+            SELECT USERID, DOCID, BATCHID, BATCHDATE
+            FROM sa100
+            WHERE USERID=#{userId} AND DOCID=#{docId}
+            ]]>
+	</insert>
+
+	<select id="GetCustomerListByName" parameterType="SearchParams"
+		resultType="CustomerData">
+        <![CDATA[ select 
+            USERID as UserId, 
+            CUSTOMERID as CustomerId,
+            CUSTNAME as CustName,
+            PPBUYERID as BuyerId,
+            CUSTEMAIL as CustEmail,
+            CONTACTPHONE as ContactPhone,
+            SHIPPINGADDRESS as ShippingAddress
+            FROM cu001
+            WHERE USERID=#{userId} AND
+            CUSTNAME LIKE #{searchVal}
+            ORDER BY CUSTNAME]]>
+	</select>
+	<select id="GetClosedSoLinesByCustomer" parameterType="CustomerData"
+		resultType="SaLineData">
+        <![CDATA[ SELECT a.SONUMBER as SoNumber,
+            a.ITEMID as ItemId,
+            b.ITEMDESC as ItemDesc,
+            a.SALEPRICE as SalePrice,
+            a.QTYSOLD as QtySold,
+            a.EVETXNID as EveTxnId
+        FROM sa302 a INNER JOIN iv001 b ON
+        a.ITEMID = b.ITEMID INNER JOIN sa301 c ON
+        a.SONUMBER = c.SONUMBER
+        WHERE b.USERID=#{userId} AND c.CUSTOMERID=#{customerId}
+        ORDER BY a.SONUMBER, a.ITEMID ]]></select>
+	<select id="GetClosedSoLine" parameterType="SaLookupParams"
+		resultType="SaLineData">
+        <![CDATA[ SELECT a.SONUMBER as SoNumber,
+            a.ITEMID as ItemId,
+            b.ITEMDESC as ItemDesc,
+            a.SALEPRICE as SalePrice,
+            a.QTYSOLD as QtySold,
+            a.EVETXNID as EveTxnId
+        FROM sa302 a INNER JOIN iv001 b ON
+        a.ITEMID = b.ITEMID
+        WHERE b.USERID=#{userId} AND a.SONUMBER=#{soNumber}
+        AND a.ITEMID=#{itemId}
+        ORDER BY a.ITEMID ]]></select>
+	<delete id="DeleteClosedSoLine" parameterType="SaLineData">
+        <![CDATA[ delete from sa302
+           WHERE SONUMBER=#{soNumber} AND ITEMID=#{itemId}]]></delete>
+
+	<select id="GetClosedSoHeader" parameterType="SaHeaderData"
+		resultType="SaHeaderData">
+        <![CDATA[ SELECT c.BATCHID, 
+            c.USERID,
+            a.DOCID,
+            a.SONUMBER,
+            a.CUSTOMERID,
+            b.CUSTNAME,
+            a.SODATE,
+            1 as SAVED,
+            a.PAYPALFEE
+        FROM sa301 a INNER JOIN cu001 b ON
+        a.CUSTOMERID = b.CUSTOMERID INNER JOIN
+        sa300 c on a.DOCID = c.DOCID
+        WHERE a.DOCID=#{docId} AND
+        a.SONUMBER=#{soNumber}]]></select>
+
+	<select id="GetClosedSoLineList" parameterType="SaHeaderData"
+		resultType="SaLineData">
+        <![CDATA[ SELECT a.SONUMBER as SoNumber,
+            a.ITEMID as ItemId,
+            b.ITEMDESC as ItemDesc,
+            a.SALEPRICE as SalePrice,
+            a.QTYSOLD as QtySold,
+            a.EVETXNID as EveTxnId
+        FROM sa302 a INNER JOIN iv001 b ON
+        a.ITEMID = b.ITEMID
+        WHERE b.USERID=#{userId} AND a.SONUMBER=#{soNumber}
+        ORDER BY a.ITEMID ]]></select>
+
+
+</mapper>        

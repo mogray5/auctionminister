@@ -1,0 +1,76 @@
+#parse("/pages/top.vm")
+#parse("/pages/workmenu.vm")
+#hmenu($itemlist '100%' "right" "workmenu" 1)
+#parse("/pages/inventorymenu.vm")
+#hmenu($itemlist '100%' "right" "submenu" 2)
+
+#if ($isSecure=="S")
+	<br><br>
+	#mainheader("Inventory Maintenance")
+	
+	<form name="frmEditItem" method="POST" action="ivdoedititem.action">
+	
+	#set($maint1="#menulink('javascript:document.frmEditItem.submit();' 'Save' 'menulink')")
+	#set($maint2="#menulink('ivdoitemlookup.action?page=1' 'Lookup Item' 'menulink')")
+	#set($itemlist=[$maint1, $maint2])
+	#hmenu($itemlist '150px' "center" "submenu" 99)
+	
+	<br><br>
+
+	#formstart("500px" "center")
+	
+	<input type="hidden" name="ItemType" value="1"/>
+	
+	#if($Item.getItemId() && $Item.getItemId()!="")
+		<input type="hidden" name="ItemId" value="$!Item.getItemId()"/>
+		<input type="hidden" name="Directive" value="1"/>
+		#dataout("Item Number" $!Item.getItemId())
+	#else
+		#textinput("Item Number" "ItemId" $!Item.getItemId() 20)	
+		<input type="hidden" name="Directive" value="2"/>
+	#end
+	
+	#textareainput("Item Description" "ItemDesc" $!Item.getItemDesc() 5 40)
+	
+	#startddinput("Item Class" "ItemClassId")
+   		#foreach($class in $ItemClassList)
+   		  	#if($Item.getItemClassId()==$class.getClassId())
+       		  #ddoption($!class.getClassName() $!class.getClassId() ".")
+       		#else
+			  #ddoption($!class.getClassName() $!class.getClassId() "")	
+			#end
+		#end
+    #endddinput()
+       
+       	#textinput("Cost" "CurrentCost" $!Item.getCurrentCost() 10)
+       	#textinput("List Price" "ListPrice" $!Item.getListPrice() 10)
+		#textinput("Shipping Weight(Oz.)" "ShippingWeight" $!Item.getShippingWeight() 5)
+      	#textinput("Bin Number" "BinNumber" $!Item.getBinNumber() 15)
+
+	#startddinput("Primary Vendor" "PrimaryVendor")
+		#foreach($vendor in $VendorList)
+			#if($Item.getPrimaryVendor()==$vendor.getVendorId())
+				#ddoption($!vendor.getVendorName() $!vendor.getVendorId() ".")	
+			#else
+				#ddoption($!vendor.getVendorName() $!vendor.getVendorId() "")	
+			#end
+		#end
+    #endddinput()
+	
+	#if($Item.getIsAssembly()==1)
+		#checkbox("Assembly" "IsAssembly" "checked")
+	#else
+		#checkbox("Assembly" "IsAssembly" "")
+	#end
+	
+	#textinput("Build Time (hrs)" "BuildTime" $!Item.getBuildTime() 5)
+	#textinput("Build Qty" "BuildQty" $!Item.getBuildQty() 10)
+	
+	#formend()    
+	</form>
+
+#else
+	#denied()
+#end
+
+#parse("/pages/bottom.vm")

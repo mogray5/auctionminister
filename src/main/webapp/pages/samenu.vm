@@ -1,0 +1,7 @@
+#set($item1="#menulink('salookup.action' 'Lookup' 'menulink')")
+#set($item2="#menulink('saposting.action' 'Posting' 'menulink')")
+#set($item3="#menulink('saentry.action' 'Sales Entry' 'menulink')")
+#set($item4="#menulink('sareturns.action' 'Returns' 'menulink')")
+#set($item5="#menulink('sacustomerlookup.action' 'Customer Maintenance' 'menulink')")
+#set($itemlist=[$item1, $item2, $item3, $item4, $item5])
+<br>

@@ -1,0 +1,54 @@
+#parse("/pages/top.vm")
+#parse("/pages/workmenu.vm")
+#hmenu($itemlist '100%' "right" "workmenu" 3)
+#parse("/pages/samenu.vm")
+#hmenu($itemlist '100%' "right" "submenu" 99)
+
+#if ($isSecure=="S")
+	<br><br>
+	#mainheader("Customer Select")
+	
+	#set($maint1="#menulink('javascript:document.frmSelect.submit();' 'Select' 'menulink')")
+	#set($itemlist=[$maint1])
+	#hmenu($itemlist '70px' "center" "submenu" 99)
+	<form name="frmSelect" method="POST" action="$!Caller">
+	<br>
+		
+	#set($index = 0)
+	<div align="center">
+	
+	<table border=1 width="400px" cellpadding="5">
+		<tr class="rowstyle1">
+		<td></td>		
+		<td>Customer Id</td>
+		<td>Name</td>
+		<td>Buyer Id</td>
+		</tr>
+		#foreach ($line in $CustList)
+			
+			#if($index==0)
+				#set($style="rowstyle2")
+				#set($index=1)
+			#else
+				#set($style="rowstyle3")
+				#set($index=0)
+			#end
+			<tr class="$style">
+			<td><input type="radio" name="CustomerId" value="$line.getCustomerId()"/></td>
+			<td>$!line.getCustomerId()</td>
+			<td>$!line.getCustName()</td>
+			<td>$!line.getBuyerId()</td>
+			</tr>
+		#end
+	</table>
+	
+	</div>
+
+	</form>
+	
+	
+#else
+	#denied()
+#end
+
+#parse("/pages/bottom.vm")

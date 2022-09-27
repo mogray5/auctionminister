@@ -1,0 +1,24 @@
+--// create po302 table
+-- Migration SQL that makes the change goes here.
+
+CREATE TABLE po302 
+(
+  PONUMBER NUMERIC(20) NOT NULL DEFAULT 0,
+  ITEMID varchar(50) NOT NULL DEFAULT '',
+  PURCHPRICE DECIMAL NOT NULL DEFAULT 0.00,
+  QTYPURCH BIGINT NOT NULL DEFAULT 0,
+  EVETXNID varchar(100) DEFAULT '',
+  CONSTRAINT PK_PO302 PRIMARY KEY (PONUMBER,ITEMID) USING INDEX TABLESPACE pg_default
+) 
+WITH (
+  OIDS = FALSE
+)
+;
+
+ALTER TABLE po302 OWNER TO auctionminister;
+
+--//@UNDO
+-- SQL to undo the change goes here.
+
+DROP TABLE po302;
+

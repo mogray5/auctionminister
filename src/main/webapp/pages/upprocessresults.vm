@@ -1,0 +1,21 @@
+#parse("/pages/amupload.vm")
+
+<br><br><br>
+
+#if ($isSecure=="S")
+
+#mainheader("Upload Results")
+
+$IncludeList
+<br><br>
+$TrxType
+<br><br>
+$BatchId
+
+
+#else
+	#denied()
+#end
+
+
+#parse("/pages/bottom.vm")

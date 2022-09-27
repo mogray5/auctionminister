@@ -1,0 +1,56 @@
+#parse("/pages/top.vm")
+#parse("/pages/workmenu.vm")
+#hmenu($itemlist '100%' "right" "workmenu" 3)
+#parse("/pages/samenu.vm")
+#hmenu($itemlist '100%' "right" "submenu" 99)
+
+#if ($isSecure=="S")
+	<br><br>
+	#mainheader("Sales Returns")
+	
+	#customersearchform("sadocustomerlookup.action" "sareturns.action" "Y")
+	
+	<br>
+
+	#sectionheader("Sales Orders for Customer:  $!CustomerId")
+	
+	#set($index = 0)
+	<div align="center">
+	<table border=1 width="90%" cellpadding="5">
+		<tr class="rowstyle1">
+		<td>Sale Number</td>
+		<td>Customer Id</td>
+		<td>Item Id</td>
+		<td>Item Desc</td>
+		<td>Qty Sold</td>
+		<td>Sale Price</td>
+		<td></td>
+		</tr>
+		#foreach ($line in $SaleItemList)
+			
+			#if($index==0)
+				#set($style="rowstyle2")
+				#set($index=1)
+			#else
+				#set($style="rowstyle3")
+				#set($index=0)
+			#end
+	
+			<tr class="$style">
+			<td>$!line.getSoNumber()</td>
+			<td>$!CustomerId</td>
+			<td>$!line.getItemId()</td>
+			<td>$!line.getItemDesc()</td>
+			<td>$!line.getQtySold()</td>
+			<td>$!line.getSalePrice()</td>			
+			<td>#baselink("sadosoreturn.action?SoNumber=$!line.getSoNumber()&ItemId=$!line.getItemId()" "Return")</td>
+			</tr>
+		#end
+	</table>
+	</div>
+	
+#else
+	#denied()
+#end
+
+#parse("/pages/bottom.vm")

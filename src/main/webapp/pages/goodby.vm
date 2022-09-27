@@ -1,0 +1,11 @@
+#parse("/pages/top.vm")
+<br><br>
+<div align="center">
+
+#startbaseinfo("Goodbye!" 200)
+ <div align="center">Thank you for using Auction Minister.</div><br>
+#endbaseinfo()
+
+</div>
+
+#parse("/pages/bottom.vm")

@@ -1,0 +1,18 @@
+#parse("/pages/amupload.vm")
+
+<br><br><br>
+
+#if ($isSecure=="S")
+
+#mainheader("Transaction Submital")
+
+<br><br>
+"needs work"
+
+
+#else
+	#denied()
+#end
+
+
+#parse("/pages/bottom.vm")

@@ -1,0 +1,19 @@
+#parse("/pages/top.vm")
+
+<div align="center">
+
+<br><br>
+#startbaseinfo("Welcome to Eve Minister" 500)
+<p>If you are operating a small business selling merchandise at online 
+auctions such as Ebay then this site is for you.</p>
+<p>Auction Minister can help you organize and track your customers, 
+your inventory, your vendors, and above all, your bottom line.</p><br>
+#endbaseinfo()
+
+</div>
+
+
+
+
+
+#parse("/pages/bottom.vm")

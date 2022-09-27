@@ -1,0 +1,32 @@
+#parse("/pages/top.vm")
+#parse("/pages/workmenu.vm")
+#hmenu($itemlist '100%' "right" "workmenu" 1)
+#parse("/pages/inventorymenu.vm")
+#hmenu($itemlist '100%' "right" "submenu" 2)
+
+#if ($isSecure=="S")
+	<br><br>
+	#mainheader("Inventory Maintenance")
+	
+	#set($maint1="#menulink('ivedititem.action' 'Add Another Item' 'menulink')")
+	#set($itemlist=[$maint1])
+	#hmenu($itemlist '100px' "center" "submenu" 99)
+	
+	<br><br>
+	
+	<div align="center">
+	
+	#startbaseinfo("Add/Edit Item Successfully" 200)
+	<p class="msgblock">
+	Item update was successfull
+	</p><br>
+	#endbaseinfo()
+	
+	</div>
+	
+#else
+	#denied()
+#end
+
+#parse("/pages/bottom.vm")
+	

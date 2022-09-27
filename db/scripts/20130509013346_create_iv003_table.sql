@@ -1,0 +1,22 @@
+--// create iv003 table
+-- Migration SQL that makes the change goes here.
+
+CREATE TABLE iv003 (
+  USERID SMALLINT NOT NULL DEFAULT 0,
+  ITEMID varchar(50) NOT NULL DEFAULT '',
+  ELEMENTITEMID varchar(50) NOT NULL DEFAULT '',
+  ELEMENTQTY DECIMAL NOT NULL DEFAULT 0.00,
+  CONSTRAINT PK_IV003 PRIMARY KEY (ELEMENTITEMID,ITEMID,USERID) USING INDEX TABLESPACE pg_default
+) 
+WITH (
+  OIDS = FALSE
+)
+;
+
+ALTER TABLE iv003 OWNER TO auctionminister;
+
+
+--//@UNDO
+-- SQL to undo the change goes here.
+
+DROP TABLE iv003;

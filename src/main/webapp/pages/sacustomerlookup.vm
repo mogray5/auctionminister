@@ -1,0 +1,60 @@
+#parse("/pages/top.vm")
+#parse("/pages/workmenu.vm")
+#hmenu($itemlist '100%' "right" "workmenu" 3)
+#parse("/pages/samenu.vm")
+#hmenu($itemlist '100%' "right" "submenu" 99)
+
+#if ($isSecure=="S")
+	<br><br>
+	#mainheader("Customer Maintenance")
+	
+	#set($maint1="#menulink('saeditcustomer.action' 'Add New' 'menulink')")
+	#set($itemlist=[$maint1])
+	#hmenu($itemlist '70px' "center" "submenu" 99)
+
+	<br>	
+		
+	#set($index = 0)
+	<div align="center">
+	<table id="dataTable" border=1 width="90%" cellpadding="5">
+		<thead>
+		<tr class="rowstyle1">
+		<th>ID</th>
+		<th>Customer Name</th>
+		<th>Buyer Id</th>
+		<th>Email Address</th>
+		<th>Phone</th>
+		<th>Shipping Address</th>
+		<th></th>
+		</tr>
+		</thead>
+		<tbody>
+		#foreach ($line in $CustList)
+			
+			#if($index==0)
+				#set($style="rowstyle2")
+				#set($index=1)
+			#else
+				#set($style="rowstyle3")
+				#set($index=0)
+			#end
+	
+			<tr class="$style">
+			<td>$line.getCustomerId()</td>
+			<td>$line.getCustName()</td>
+			<td>$line.getBuyerId()</td>
+			<td>$line.getCustEmail()</td>
+			<td>$line.getContactPhone()</td>
+			<td>$line.getShippingAddress()</td>
+			<td>#baselink("saeditcustomer.action?CustomerId=$line.getCustomerId()" "Edit")</td>
+			</tr>
+		#end
+		</tbody>
+	</table>
+	</div>
+	
+#else
+	#denied()
+#end
+
+#parse("/pages/bottom.vm")

@@ -1,0 +1,44 @@
+<html>
+<head>
+	<LINK rel="stylesheet" type="text/css" href="css/jquery-ui.min.css">
+	<LINK rel="stylesheet" type="text/css" href="css/jquery-ui.structure.min.css">
+	<LINK rel="stylesheet" type="text/css" href="css/jquery-ui.theme.min.css">
+	<LINK rel="stylesheet" type="text/css" href="css/dataTables.material.min.css">
+	<LINK rel="stylesheet" type="text/css" href="css/dataTables.jqueryui.min.css">
+	<LINK rel="stylesheet" type="text/css" href="css/am.css">
+	<script type="text/javascript" language="javascript" src="scripts/jquery-2.2.2.min.js"></script>
+	<script type="text/javascript" language="javascript" src="scripts/jquery-ui.min.js"></script>
+	<script type="text/javascript" language="javascript" src="scripts/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" language="javascript" src="scripts/dataTables.jqueryui.min.js"></script>
+	<script type="text/javascript" charset="utf-8">
+        $(document).ready(function() {
+        	$('#dataTable').dataTable({"bPaginate": false});
+        	$('.dateInput').datepicker();
+        } );
+    </script>
+</head>
+<body>
+<div class="left" style="width:25%;">
+	<img src="images/logo1.png" /><td>
+</div>
+<div class="left outeredge">
+	<img src="images/headblend1.png"/ height="98px"></td></tr></table>
+	
+	##top menu
+
+	#if ($isSecure=="S")
+		#set($item1="#menulink('logout.action' 'Logoff' 'menulink')")
+	#else
+		#set($item1="#menulink('amlogin.vm' 'Login' 'menulink')")
+	#end
+	
+	#set($item2="#menulink('help.vm' 'Help' 'menulink')")
+	#set($itemlist=[$item1, $item2])
+
+	#hmenu($itemlist 150 "right" "hmenu" 99)
+	
+</div>
+<div style="clear: both;"></div>
+<div class="content">	
+
+	<!--  Main Content Start -->

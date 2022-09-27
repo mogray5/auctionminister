@@ -1,0 +1,59 @@
+#parse("/pages/amupload.vm")
+
+<br><br><br>
+
+#mainheader("EVE Online")
+#sectionheader("API Key Management")
+
+<form name="frmAddKey" method="POST" action="upapikeys.action">
+
+	
+#formstart("600px" "center")
+
+	#textinput("App Name" "appName" "$!key.getAppName()" 60)
+	#textinput("Client ID" "clientId" "$!key.getClientId()" 60)
+	#textinput("Secret Key" "vcode" "$!key.getVcode()" 60)
+	#textinput("Scopes" "scopes" "$!key.getScopes()" 60)
+
+
+	#set($maint1="#menulink('javascript:document.frmAddKey.submit();' 'Add Key' 'menulink')")
+	#set($itemlist=[$maint1])
+	<br>
+	#hmenu($itemlist '150px' "center" "submenu" 99)
+
+<br><br>
+
+#set($index = 0)
+	<div align="center">
+	<table border=1 width="90%" cellpadding="5">
+		<tr class="rowstyle1">
+		<td>App Name</td>
+		<td>Client Id</td>
+		<td>Secret Key</td>
+		<td>Scopes</td>
+		<td></td>
+		</tr>
+		#foreach ($key in $Keys)
+			
+			#if($index==0)
+				#set($style="rowstyle2")
+				#set($index=1)
+			#else
+				#set($style="rowstyle3")
+				#set($index=0)
+			#end
+	
+			<tr class="$style">
+			<td>$!key.getAppName()</td>
+			<td>$!key.getClientId()</td>
+			<td>$!key.getvCode()</td>
+			<td>$!key.getScopes()</td>
+			<td class="center">#baselink("upapikeys.action?clientId=$!key.getClientId()&doRemove=true" "Delete")</td>
+			</tr>
+		#end
+	</table>
+	</div>
+
+#formend() 
+
+#parse("/pages/bottom.vm")

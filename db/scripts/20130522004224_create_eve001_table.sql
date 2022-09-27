@@ -1,0 +1,21 @@
+--// create eve001 table
+-- Migration SQL that makes the change goes here.
+
+CREATE TABLE eve001 
+(
+  REFTYPEID SMALLINT NOT NULL DEFAULT 0,
+  REFTYPENAME varchar(100) NOT NULL DEFAULT '',
+  COSTACTINDEX INTEGER DEFAULT NULL,
+  CONSTRAINT PK_EVE001 PRIMARY KEY (REFTYPEID,REFTYPENAME) USING INDEX TABLESPACE pg_default
+) 
+WITH (
+  OIDS = FALSE
+)
+;
+
+ALTER TABLE eve001 OWNER TO auctionminister;
+
+--//@UNDO
+-- SQL to undo the change goes here.
+
+DROP TABLE eve001;

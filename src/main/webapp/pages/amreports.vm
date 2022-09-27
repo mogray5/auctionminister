@@ -1,0 +1,52 @@
+#parse("/pages/top.vm")
+#parse("/pages/workmenu.vm")
+#hmenu($itemlist '100%' "right" "workmenu" 4)
+
+<br><br>
+#sectionheader("Reports Menu")
+
+<div align="center">
+<table width="60%" cellpadding="8">
+<tr>
+<td class="subsectionheader">Financial</td>
+<td class="subsectionheader">Inventory</td>
+</tr>
+<td valign="top">
+	#set($item1="#menulink('rptprofitloss.action' 'Profit & Loss' 'menulink')")
+	#set($item2="#menulink('rptprofitlossmonthly.action' 'Profit & Loss by Month' 'menulink')")
+	#set($item6="#menulink('rptitemactivitymonthly.action' 'Item Activity' 'menulink')")
+	#set($item3="#menulink('reportparams.action?ReportId=7' 'Inventory Valuation By Month' 'menulink')")
+	#set($item4="#menulink('reportparams.action?ReportId=8' 'Ending Cash By Month' 'menulink')")
+	#set($item5="#menulink('reportparams.action?ReportId=12' 'Non-Merchandise Charges' 'menulink')")
+	#set($itemlist=[$item1, $item2, $item6, $item3, $item4, $item5])
+	#vmenu($itemlist "100%" "center" "reportmenu" 99)
+</td>
+<td valign="top">
+	#set($item1="#menulink('reportparams.action?ReportId=3' 'Stock Status' 'menulink')")
+	#set($itemlist=[$item1])
+	#vmenu($itemlist "100%" "center" "reportmenu" 99)
+</td>
+</tr>
+<tr>
+<td class="subsectionheader">Sales</td>
+<td class="subsectionheader">Purchases</td>
+</tr>
+<tr>
+<td>
+	#set($item1="#menulink('reportparams.action?ReportId=4' 'Sales By Customer' 'menulink')")
+	#set($item2="#menulink('reportparams.action?ReportId=5' 'Sales By Item' 'menulink')")
+	#set($item3="#menulink('reportparams.action?ReportId=6' 'Open Sales Orders' 'menulink')")
+	#set($itemlist=[$item1, $item2, $item3])
+	#vmenu($itemlist "100%" "center" "reportmenu" 99)
+</td>
+<td>
+	#set($item1="#menulink('reportparams.action?ReportId=9' 'Purchases By Vendor' 'menulink')")
+	#set($item2="#menulink('reportparams.action?ReportId=10' 'Purchases By Item' 'menulink')")
+	#set($item3="#menulink('reportparams.action?ReportId=11' 'Open Purchase Orders' 'menulink')")
+	#set($itemlist=[$item1, $item2, $item3])
+	#vmenu($itemlist "100%" "center" "reportmenu" 99)
+</td></tr>
+</table>
+</div>
+
+#parse("/pages/bottom.vm")

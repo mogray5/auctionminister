@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auctionminister.data">
+
+	<select id="GetEveAPIKeys" resultType="UploadKey">
+       <![CDATA[  
+        SELECT a.VCODE, a.CLIENTID, a.APPNAME, a.SCOPES
+        FROM sy006 a ]]>
+	</select>
+	
+	<select id="GetEveAPIKey" resultType="UploadKey">
+       <![CDATA[  
+        SELECT a.CLIENTID, a.VCODE, a.APPNAME, a.SCOPES
+        FROM sy006 a
+        WHERE a.CLIENTID = #{clientId} ]]>
+	</select>
+
+	<insert id="AddEveAPIKey" parameterType="UploadKey">
+		<![CDATA[
+		
+		INSERT INTO sy006(clientid, vcode, appname, scopes)
+    	VALUES (#{clientId}, #{vCode}, #{appName}, #{scopes});
+		]]>
+	</insert>
+
+	<delete id="DeleteEveAPIKey" parameterType="UploadKey">
+		<![CDATA[
+		DELETE FROM sy006
+		WHERE clientid = #{clientId};
+		]]>
+	</delete>
+	
+	<update id="UpdateEveAPIKey" parameterType="UploadKey">
+		<![CDATA[
+		UPDATE sy006
+		SET vcode = #{vCode}
+		WHERE clientid = #{clientId};
+		]]>
+	</update>
+
+	<update id="AssignCostIndex" parameterType="EveReftypeData">
+		<![CDATA[
+			update eve001
+			set COSTACTINDEX = ${costActIndex},
+			IGNORE = ${ignore}
+			WHERE REFTYPEID = ${refTypeId};
+		]]>
+	</update>
+	
+	<update id="AssignIncomeIndex" parameterType="EveReftypeData">
+		<![CDATA[
+			update eve001
+			set INCACTINDEX = ${incActIndex},
+			IGNORE = ${ignore}
+			WHERE REFTYPEID = ${refTypeId};
+		]]>
+	</update>
+	
+	<select id="GetEveReftype" resultType="EveReftypeData">
+		<![CDATA[
+		
+			SELECT refTypeId, refTypeName, costActIndex,
+			ignore, incActIndex
+			FROM eve001
+			WHERE REFTYPEID = ${refTypeId};
+		
+		]]>	
+	</select>
+	
+	<select id="GetEveReftypes" resultType="EveReftypeData">
+		<![CDATA[
+		
+			SELECT refTypeId, refTypeName, costActIndex,
+			ignore, incActIndex
+			FROM eve001
+			order by refTypeName;
+		
+		]]>	
+	</select>
+	<update id="SetReftypeIgnore" parameterType="EveReftypeData">
+		<![CDATA[
+			UPDATE eve001 SET ignore = ${ignore}
+			WHERE REFTYPEID = ${refTypeId};
+		]]>	
+	</update>
+	<select id="GetReftypeIgnoreList" resultType="EveReftypeData">
+		<![CDATA[
+			SELECT refTypeId, refTypeName, costActIndex,
+			ignore, incActIndex
+			FROM eve001
+			WHERE ignore = true; 
+		]]>	
+	</select>
+</mapper>

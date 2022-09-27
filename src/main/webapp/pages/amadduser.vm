@@ -1,0 +1,44 @@
+#parse("/pages/top.vm")
+
+<br><br>
+
+<form name="frmAddUser" method="post" action="adduser.action">
+
+<div align="center">
+#mainheader("New User Setup")
+
+#startbaseinfo("Notice" 400)
+Personal information is strictly confidential and is not shared
+with other companies or organizations.
+#endbaseinfo()
+</div>
+
+<br><br>
+
+#set($new1="#menulink('javascript:document.frmAddUser.submit();' 'Submit' 'menulink')")
+#set($new2="#menulink('index.vm' 'Cancel' 'menulink')")
+#set($menu=[$new1, $new2])
+#hmenu($menu '100px' "center" "submenu" 99)
+<br>
+#formstart(400 "center")
+
+	#textinput("User Name *" "UserName" "" 15)
+	#textinputencrypted("Password *" "Pswd" "" 15)
+	#textinputencrypted("Confirm Password *" "Cpswd" "" 15)
+	#textinput("First Name *" "FirstName" "" 15)
+	#textinput("Last Name *" "LastName" "" 15)
+	#textinput("M.I." "MiddleInitial" "" 2)
+	#textinput("Phone Number *" "Phone" "" 15)
+	#textinput("Street Address Line 1" "Address1" "" 30)
+	#textinput("Street Address Line 2" "Address2" "" 30)
+	#textinput("Street Address Line 3" "Address3" "" 30)
+	#textinput("City" "City" "" 20)
+	#textinput("State" "State" "" 2)
+	#textinput("Zip" "Zip" "" 10)
+	
+#formend()
+
+</form>
+
+
+#parse("/pages/bottom.vm")

@@ -1,0 +1,29 @@
+--// create iv004 table
+-- Migration SQL that makes the change goes here.
+
+CREATE SEQUENCE iv004_seq
+   INCREMENT 1
+   START 1;
+ALTER TABLE iv004_seq OWNER TO auctionminister;
+
+CREATE TABLE iv004 
+(
+  USERID SMALLINT NOT NULL DEFAULT 0,
+  CLASSID BIGINT NOT NULL DEFAULT nextval('iv004_seq'::regclass),
+  CLASSNAME varchar(25) NOT NULL DEFAULT '',
+  CLASSDESC varchar(255) NOT NULL DEFAULT '',
+  CONSTRAINT PK_IV004 PRIMARY KEY (CLASSID) USING INDEX TABLESPACE pg_default, 
+  CONSTRAINT UK_IV004_1 UNIQUE (USERID,CLASSNAME) USING INDEX TABLESPACE pg_default
+) 
+WITH (
+  OIDS = FALSE
+)
+;
+
+ALTER TABLE iv004 OWNER TO auctionminister;
+
+--//@UNDO
+-- SQL to undo the change goes here.
+
+DROP TABLE iv004;
+DROP SEQUENCE iv004_seq;

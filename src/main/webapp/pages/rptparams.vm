@@ -1,0 +1,73 @@
+#parse("/pages/top.vm")
+#parse("/pages/workmenu.vm")
+#hmenu($itemlist '100%' "right" "workmenu" 4)
+#parse("/pages/samenu.vm")
+#hmenu($itemlist '100%' "right" "submenu" 99)
+
+#if ($isSecure=="S")
+	<br><br>
+
+	#sectionheader("Report $Report.getReportName() Parameters")
+
+	<form name="frmParams" method="POST" action="$!Report.getReportAction()">
+	
+		#set($maint1="#menulink('javascript:document.frmParams.submit();' 'Submit' 'menulink')")
+		#set($maint2="#menulink('reportsmain.action' 'Cancel' 'menulink')")
+		#set($itemlist=[$maint1, $maint2])
+		#hmenu($itemlist '150px' "center" "submenu" 99)
+
+		<br><br>
+
+		#formstart("350px" "center")
+	
+		#if ($Report.getParamList().size()==0)
+			#startbaseinfo("No Paramaeters" 300)
+				<p>This report has no parameters.  Click <b>Submit</b>
+				to run the report.</p><br>
+			#endbaseinfo()
+		#end
+		
+		#foreach($line in $Report.getParamList())
+		
+			## TEXT INPUT
+		
+			#if($line.getParamType()==1)
+				
+				#textinput($line.getParamFriendlyName() $line.getParamName() $line.getParamDefaults() $line.getParamLength())
+
+			#elseif($line.getParamType()==2)
+				
+			## COMBO INPUT
+				
+				#startddinput($line.getParamFriendlyName() $line.getParamName())
+					#foreach($default in $line.getDefaultsList())
+						#ddoption($default.getValue() $default.getId() "")
+					#end
+				#endddinput()
+		
+			#elseif($line.getParamType()==3)
+
+			## RADIO INPUT		
+
+			#elseif($line.getParamType()==4)
+
+			## CHECKBOX INPUT
+		
+			#end
+	
+		#end
+		
+		<br><br>
+		
+		#set($maint1="#menulink('javascript:document.frmParams.submit();' 'Submit' 'menulink')")
+		#set($maint2="#menulink('reportsmain.action' 'Cancel' 'menulink')")
+		#set($itemlist=[$maint1, $maint2])
+		#hmenu($itemlist '150px' "center" "submenu" 99)
+
+	</form>
+
+#else
+	#denied()
+#end
+
+#parse("/pages/bottom.vm")

@@ -1,0 +1,65 @@
+#parse("/pages/top.vm")
+#parse("/pages/workmenu.vm")
+#hmenu($itemlist '100%' "right" "workmenu" 2)
+#parse("/pages/pomenu.vm")
+#hmenu($itemlist '100%' "right" "submenu" 99)
+
+#if ($isSecure=="S")
+	<br><br>
+	#mainheader("Vendor Maintenance")
+	
+	#sectionheader("Vendor List")
+
+	#set($maint1="#menulink('poaddvendor.action' 'Add New' 'menulink')")
+	#set($itemlist=[$maint1])
+	#hmenu($itemlist '70px' "center" "submenu" 99)
+	
+	<br>
+		
+	#set($index = 0)
+	<div align="center">
+	<table id="dataTable" border=1 width="90%" cellpadding="5">
+		<thead>
+		<tr class="rowstyle1">
+		<th>Vendor ID</th>
+		<th>Vendor Name</th>
+		<th>Status</th>
+		<th>Contact Info</th>
+		<th></th>
+		<th></th>
+		</tr>
+		</thead>
+		<tbody >
+		#foreach ($line in $VendorList)
+			
+			#if($index==0)
+				#set($style="rowstyle2")
+				#set($index=1)
+			#else
+				#set($style="rowstyle3")
+				#set($index=0)
+			#end
+	
+			<tr class="$style">
+			<td>$line.getVendorId()</td>
+			<td>$line.getVendorName()</td>
+			#if ($line.getStatus()==1)
+				<td>ACTIVE</td>
+			#else
+				<td>STOPPED</td>
+			#end
+			<td class="center">#baselink("povendorcontactinfo.action?VendorId=$!line.getVendorId()" "Address")</td>
+			<td class="center">#baselink("poaddvendor.action?VendorId=$!line.getVendorId()" "Edit")</td>
+			<td class="center">#baselink("pododeletevendor.action?VendorId=$!line.getVendorId()" "Delete")</td>
+			</tr>
+		#end
+		</tbody>
+	</table>
+	</div>
+	
+#else
+	#denied()
+#end
+
+#parse("/pages/bottom.vm")
+

@@ -1,0 +1,126 @@
+#parse("/pages/top.vm")
+#parse("/pages/workmenu.vm")
+#hmenu($itemlist '100%' "right" "workmenu" 2)
+#parse("/pages/pomenu.vm")
+#hmenu($itemlist '100%' "right" "submenu" 99)
+
+#if ($isSecure=="S")
+	<br><br>
+	#mainheader("Purchase Order Lookup")
+
+	#set($maint1="#menulink('javascript:document.frmLookup.submit();' 'Search' 'menulink')")
+	#set($itemlist=[$maint1])
+	#hmenu($itemlist '70px' "center" "submenu" 99)
+	
+	<br>
+	
+	<form name="frmLookup" method="POST" action="">
+		<div align="center">
+			<table border=0 cellpadding="0" width="400px">
+			<tr>
+			<td><input type="radio" name="PullOption" value="1"/>
+				Batch
+				<input type="text" size="10" name="BatchId"/>
+
+			<input type="radio" name="PullOption" value="3"/>
+				PO Number
+			<input type="text" size="15" name="PoNumber"/></td>
+			</tr>
+			<tr>
+			<td><br><input type="radio" name="PullOption" value="2"/>			
+				Date from: #dateinput("StartDate") to
+				#dateinput("EndDate")</td>
+			</tr>
+			<td><br><input type="radio" name="PullOption" value="4"/>
+				Vendor: <input type="text" size="7" name="VendorName"/></td>
+			</tr>
+			<tr>
+			<td>
+				<br>
+				<input type="checkbox" name="IncludeHistory" value="1"/>
+				Include History 
+			</td>
+			</tr>
+		
+		</table>
+		</div>
+	
+	</form>
+	
+	<br>
+
+	#sectionheader("Open Purchase Orders")
+	
+	#set($index = 0)
+	<div align="center">
+	<table border=1 width="90%" cellpadding="5">
+		<tr class="rowstyle1">
+		<td>PO Number</td>
+		<td>Batch Id</td>
+		<td>Date</td>
+		<td>Vendor</td>
+		<td></td>
+		</tr>
+		#foreach ($line in $OpenPoList)
+			
+			#if($index==0)
+				#set($style="rowstyle2")
+				#set($index=1)
+			#else
+				#set($style="rowstyle3")
+				#set($index=0)
+			#end
+	
+			<tr class="$style">
+			<td>#baselink("poview.action?DocId=$!line.getDocId()&PoNumber=$!line.getPoNumber()" "$!line.getPoNumber()")</td>
+			<td>$!line.getBatchId()</td>
+			<td>$!line.getPoDateString()</td>
+			<td>$!line.getVendorName()</td>
+			<td><a href="podoseteditopenpo.action?DocId=$!line.getDocId()&PoNumber=$!line.getPoNumber()">
+					Edit
+				</a>
+			</td>
+			</tr>
+		#end
+	</table>
+	</div>
+
+	<br>
+	
+	#sectionheader("Closed Purchase Orders")
+
+	#set($index = 0)
+	<div align="center">
+	<table border=1 width="90%" cellpadding="5">
+		<tr class="rowstyle1">
+		<td>Batch Id</td>
+		<td>PO Number</td>
+		<td>Date</td>
+		<td>Vendor</td>
+		</tr>
+		#foreach ($line in $ClosedPoList)
+			
+			#if($index==0)
+				#set($style="rowstyle2")
+				#set($index=1)
+			#else
+				#set($style="rowstyle3")
+				#set($index=0)
+			#end
+	
+			<tr class="$style">
+			<td>$!line.getBatchId()</td>
+			<td>#baselink("poviewclosed.action?DocId=$!line.getDocId()&PoNumber=$!line.getPoNumber()" "$!line.getPoNumber()")</td>
+			<td>$!line.getPoDateString()</td>
+			<td>$!line.getVendorName()</td>
+			</tr>
+		#end
+	</table>
+	</div>
+	
+
+#else
+	#denied()
+#end
+
+#parse("/pages/bottom.vm")

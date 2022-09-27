@@ -1,0 +1,72 @@
+#parse("/pages/amupload.vm")
+
+<br><br><br>
+
+#mainheader("EVE Online")
+#sectionheader("Income Type Assignment")
+
+<form name="frmEditIncomeTypes" method="POST" action="upassignincometypes.action">
+
+	
+#formstart("600px" "center")
+
+
+	#set($maint1="#menulink('javascript:document.frmEditIncomeTypes.submit();' 'Save' 'menulink')")
+	#set($itemlist=[$maint1])
+	<br>
+	#hmenu($itemlist '150px' "center" "submenu" 99)
+
+<br><br>
+
+#set($index = 0)
+	<div align="center">
+	<table border=1 width="90%" cellpadding="5">
+		<tr class="rowstyle1">
+		<td>Reference Type Id</td>
+		<td>Reference Type Name</td>
+		<td>Income Account</td>
+		<td>Ignore</td>
+		</tr>
+		#foreach ($refType in $RefTypes)
+			
+			#if($index==0)
+				#set($style="rowstyle2")
+				#set($index=1)
+			#else
+				#set($style="rowstyle3")
+				#set($index=0)
+			#end
+	
+			<tr class="$style">
+			<td>$!refType.getRefTypeId()</td>
+			<td>$!refType.getRefTypename()</td>
+			<td>
+				<input type="hidden" name="ReturnTypes" value="$!refType.getRefTypeId()">
+				<select name="IncList" >
+					<option value="na"></option>
+					#foreach ($glAccountType in $GlAccountTypes)
+						#if($glAccountType.getAccountIndex()==$refType.getIncActIndex())
+						<option value="$!glAccountType.getAccountIndex()" selected="selected">$!glAccountType.getAccountDescription()</option>
+						#else
+						<option value="$!glAccountType.getAccountIndex()">$!glAccountType.getAccountDescription()</option>
+						#end
+					#end
+				</select
+				
+				   
+			</td>
+			<td>
+				#if($refType.isIgnore())
+					<input name="IgnoreList" type="checkbox" checked="checked" value="$!refType.getRefTypeId()">
+				#else
+					<input name="IgnoreList" type="checkbox" value="$!refType.getRefTypeId()">
+				#end	
+			</td>
+			</tr>
+		#end
+	</table>
+	</div>
+<!-- $!refType.getIncAccountIndex() -->
+#formend() 
+
+#parse("/pages/bottom.vm")

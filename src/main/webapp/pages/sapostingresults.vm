@@ -1,0 +1,32 @@
+#parse("/pages/top.vm")
+#parse("/pages/workmenu.vm")
+#hmenu($itemlist '100%' "right" "workmenu" 3)
+#parse("/pages/samenu.vm")
+#hmenu($itemlist '100%' "right" "submenu" 99)
+
+#if ($isSecure=="S")
+	<br><br>
+	#mainheader("Posting Results")
+	
+	#set($maint1="#menulink('#' 'Back' 'menulink')")
+	#set($itemlist=[$maint1])
+	#hmenu($itemlist '70px' "center" "submenu" 99)
+	
+	<br><br>
+	
+	<div align="center">
+	
+	#startbaseinfo("Process Results" 200)
+	<p class="msgblock">
+		Sales Order batch was successfully posted!
+	</p><br>
+	#endbaseinfo()
+	
+	</div>
+
+	
+#else
+	#denied()
+#end
+
+#parse("/pages/bottom.vm")

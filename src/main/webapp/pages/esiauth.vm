@@ -1,0 +1,16 @@
+#parse("/pages/top.vm")
+
+<div align="center">
+
+<br><br>
+#startbaseinfo("Login Success" 500)
+<p>You can close this tab.</p><br>
+#endbaseinfo()
+
+</div>
+
+
+
+
+
+#parse("/pages/bottom.vm")

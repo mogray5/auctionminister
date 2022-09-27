@@ -1,0 +1,71 @@
+#parse("/pages/top.vm")
+#parse("/pages/workmenu.vm")
+#hmenu($itemlist '100%' "right" "workmenu" 2)
+#parse("/pages/pomenu.vm")
+#hmenu($itemlist '100%' "right" "submenu" 99)
+
+#if ($isSecure=="S")
+	<br><br>
+	#mainheader("Purchase Order Posting")
+	
+	<br>
+	
+	#set($maint1="#menulink('javascript:document.frmPost.submit();' 'Post' 'menulink')")
+	#set($itemlist=[$maint1])
+	#hmenu($itemlist '70px' "center" "submenu" 99)
+	
+	<br>
+	<div style="margin-bottom: 20px;">
+		#set($maint1="#menulink('javascript:SelectAll(true);' 'Select All' 'menulink')")
+		#set($maint2="#menulink('javascript:SelectAll(false);' 'Deselect All' 'menulink')")
+		#set($itemlist=[$maint1, $maint2])
+		#hmenu($itemlist '150px' "center" "submenu" 99)
+	</div>
+	
+	#set($index = 0)
+	<form name="frmPost" method="POST" action="podopostpobatches.action">
+	<div align="center">
+	<table border=1 width="90%" cellpadding="5">
+		<tr class="rowstyle1">
+		<td></td>
+		<td>Doc Id</td>
+		<td>Batch Id</td>
+		<td>Batch Date</td>
+		<td></td>
+		</tr>
+		#foreach ($line in $BatchList)
+			
+			#if($index==0)
+				#set($style="rowstyle2")
+				#set($index=1)
+			#else
+				#set($style="rowstyle3")
+				#set($index=0)
+			#end
+	
+			<tr class="$style">
+			<td><input type="checkbox" name="DocList" value="$!line.getDocId()" class="checkbox"/></td>
+			<td>$line.getDocId()</td>
+			<td>#baselink("polookup.action?BatchId=$line.getBatchId()&PullOption=1" "$line.getBatchId()")</td>
+			<td>$line.getBatchDateString()</td>
+			<td>#baselink("pododeletebatch.action?DocId=$line.getDocId()" "Delete")</td>
+			</tr>
+		#end
+	</table>
+	</div>
+	</form>
+#else
+	#denied()
+#end
+
+<script type="text/javascript" charset="utf-8">
+       function SelectAll(val){
+       
+       		$('.checkbox').each(function(){
+	        	$(this).attr('checked', val);
+        	});
+        	
+        }
+</script>
+
+#parse("/pages/bottom.vm")
